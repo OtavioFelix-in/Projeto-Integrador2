@@ -32,7 +32,7 @@ Back-end: camada responsável por conectar todas essas interfaces, processando e
 
 Banco de dados: relacional, definido pela própria equipe, contemplando as tabelas necessárias para paciente, atendimento e demais informações do processo, como triagem, classificação e medicações.
 
-🛠️ Tecnologias
+Tecnologias
 
 Ajuste esta seção conforme as decisões finais da equipe.
 
