@@ -20,8 +20,8 @@ Sistema web para controle do fluxo de atendimento em um Pronto Socorro, da chega
 
 ```mermaid
 erDiagram
-    PACIENTE ||--o{ ATENDIMENTO : possui
-    ATENDIMENTO ||--|| TRIAGEM : tem
+    PACIENTE ||--o{ ATENDIMENTO : Procura
+    ATENDIMENTO ||--|| TRIAGEM : Envia
     ATENDIMENTO ||--o{ PRESCRICAO : recebe
 
     PACIENTE {
