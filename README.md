@@ -1,39 +1,77 @@
 # Sistema de Atendimentos de Pronto Socorro
 
-Sistema web para controle do fluxo de atendimento em um Pronto Socorro, desde a chegada do paciente na recepção até a alta médica. Desenvolvido como Projeto Integrador 2 do curso de Sistemas de Informação.
+Sistema web para controle do fluxo de atendimento em um Pronto Socorro, da chegada do paciente na recepção até a alta médica. Projeto Integrador 2 — Sistemas de Informação, PUC-Campinas.
 
-##  Sobre o projeto
+## O processo
 
-O Projeto Integrador 2 tem como objetivo unir os conhecimentos dos componentes curriculares do semestre, como programação web, banco de dados, engenharia de processos e estrutura de dados/algoritmos, em um projeto prático e autogerenciado pela equipe, com acompanhamento (não técnico) de um professor orientador.
+1. **Recepção** — cadastra o paciente e abre o atendimento, gerando um número único (ex: `AT0001`).
+2. **Triagem (Enfermagem)** — registra sinais vitais e classifica o risco conforme o Protocolo de Manchester.
+3. **Atendimento médico** — o médico chama por prioridade, registra medicações e confirma a consulta.
 
-O sistema contempla três etapas do processo de atendimento de um Pronto Socorro. Na recepção acontece o cadastro do paciente e a abertura do atendimento. Na triagem, feita pela enfermagem, são coletados os sinais vitais e é definida a classificação de risco. E no atendimento médico o paciente é chamado por prioridade, recebe as medicações registradas e tem sua consulta confirmada.
+## Estrutura do sistema
 
-##  atendimento
+| Camada | Responsabilidade |
+|---|---|
+| Front-end | Recepção (incluir/alterar/consultar/cancelar), Triagem (lançar dados vitais), Médico (Painel de Atendimentos + medicações/confirmação) |
+| Back-end | Conecta as três interfaces e persiste os dados |
+| Banco de dados | Relacional, 4 tabelas: `paciente`, `atendimento`, `triagem`, `prescricao` |
 
-### 1. Recepção
+## Modelo de dados
 
-O paciente chega e é feito o cadastro com seus dados pessoais: nome completo, endereço, RG, CPF, nome do pai, nome da mãe, data de nascimento, entre outros. A partir desse cadastro é gerado um número de atendimento único (por exemplo, `AT0001`). A recepção também pode incluir, alterar, consultar e cancelar um atendimento, desde que ele ainda não tenha sido confirmado pelo médico.
+```mermaid
+erDiagram
+    PACIENTE ||--o{ ATENDIMENTO : possui
+    ATENDIMENTO ||--|| TRIAGEM : tem
+    ATENDIMENTO ||--o{ PRESCRICAO : recebe
 
-### 2. Triagem (Enfermagem)
+    PACIENTE {
+        int id_paciente PK
+        varchar nome_completo
+        varchar cpf UK
+        varchar rg UK
+        date data_nascimento
+        varchar nome_pai
+        varchar nome_mae
+        varchar endereco
+    }
 
-O paciente é conduzido à enfermagem, onde são registrados os dados vitais vinculados ao atendimento: pressão arterial, temperatura corporal, batimentos cardíacos e as principais queixas (dor de cabeça, náusea, enjoo, dor muscular, suor excessivo etc.). É nesta etapa também que o atendimento é classificado conforme o Protocolo de Manchester.
+    ATENDIMENTO {
+        int id_atendimento PK
+        varchar numero_atendimento UK
+        datetime data_hora_entrada
+        varchar status
+        int id_paciente FK
+    }
 
-### 3. Atendimento médico
+    TRIAGEM {
+        int id_triagem PK
+        int id_atendimento FK
+        varchar pressao_arterial
+        decimal temperatura
+        int batimentos_cardiacos
+        varchar queixas
+        int prioridade
+    }
 
-O médico acessa o atendimento, registra as medicações e confirma a consulta. Ele conta ainda com um Painel de Atendimento, uma tela que lista os pacientes em ordem de prioridade segundo a classificação de Manchester, mostrando número do atendimento, nome do paciente, data de nascimento e outras informações que facilitam saber quem deve ser chamado a seguir.
+    PRESCRICAO {
+        int id_prescricao PK
+        int id_atendimento FK
+        varchar medicamento
+        varchar dosagem
+    }
+```
 
-##  Estrutura do sistema
+### Notas do modelo
 
-O projeto é dividido em três frentes de desenvolvimento.
+- `atendimento.status` controla o fluxo: `aberto` → `triado` → `confirmado` (ou `cancelado`). A recepção só pode alterar/cancelar enquanto não estiver `confirmado`.
+- `triagem` é 1:1 com `atendimento` (`id_atendimento` é `UNIQUE`) — cada atendimento passa pela enfermagem uma única vez.
+- `prioridade` guarda a classificação de Manchester como número (1 a 5), não como tabela separada — o back-end faz a conversão cor ↔ número. Isso mantém o `ORDER BY` do Painel do Médico simples, direto no SQL.
+- `prescricao` é 1:N — um atendimento pode ter várias medicações lançadas.
 
-Front-end: reúne a interface deúne a interface da recepção, com inclusão, alteração, consulta e cancelamento de atendimentos; a interface da triagem, para a enfermagem registrar os dados do atendimento; e as interfaces do médico, que incluem o Painel de Atendimentos e a tela para lançamento de medicações e confirmação da consulta.
+## Tecnologias
 
-Back-end: camada responsável por conectar todas essas interfaces, processando e persistindo os dados que fazem o sistema funcionar.
+_Ajustar conforme decisão final da equipe._
 
-Banco de dados: relacional, definido pela própria equipe, contemplando as tabelas necessárias para paciente, atendimento e demais informações do processo, como triagem, classificação e medicações.
-
-Tecnologias
-
-Ajuste esta seção conforme as decisões finais da equipe.
-
-Front-end em HTML, CSS e JavaScript. Back-end em Node.js/JavaScript. Banco de dados relacional em SQL.
+- Front-end: HTML, CSS, JavaScript
+- Back-end: Node.js / JavaScript
+- Banco de dados: SQL relacional
