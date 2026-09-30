@@ -51,7 +51,7 @@ senão:
  
 Cobre também o caso de recém-nascido — é só o extremo de "menor de idade", não precisa de tratamento especial.
  
-**Por que no back-end e não no banco:** validar dependendo do valor de outra coluna da mesma linha exigiria `CHECK` com lógica de data, que o MySQL não valida de forma confiável em todas as versões. Fica mais simples e mais fácil de testar como `if` no controller antes do `INSERT`.
+**Por que no back-end e não no banco:** validar dependendo do valor de outra coluna da mesma linha exigiria `CHECK` com lógica de data, que fica pouco prático de manter e de testar no banco. Fica mais simples e mais fácil de testar como `if` no controller antes do `INSERT`.
  
 **Por que não só no front:** JS de navegador é burlável (DevTools, Postman direto na API). O front pode (e deve) also validar pra dar feedback rápido ao usuário, mas a validação que vale é a do back-end.
  

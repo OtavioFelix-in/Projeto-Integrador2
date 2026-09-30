@@ -14,7 +14,7 @@ Sistema web para controle do fluxo de atendimento em um Pronto Socorro, da chega
 |---|---|
 | Front-end | Recepção (incluir/alterar/consultar/cancelar), Triagem (lançar dados vitais), Médico (Painel de Atendimentos + medicações/confirmação) |
 | Back-end | Conecta as três interfaces e persiste os dados |
-| Banco de dados | Relacional, 4 tabelas: `paciente`, `atendimento`, `triagem`, `prescricao` |
+| Banco de dados | Relacional (Oracle), 4 tabelas: `paciente`, `atendimento`, `triagem`, `prescricao` |
 
 ## Modelo de dados
 
@@ -25,39 +25,39 @@ erDiagram
     ATENDIMENTO ||--o{ PRESCRICAO : recebe
 
     PACIENTE {
-        int id_paciente PK
-        varchar nome_completo
-        varchar cpf UK
-        varchar rg UK
+        number id_paciente PK
+        varchar2 nome_completo
+        varchar2 cpf UK
+        varchar2 rg UK
         date data_nascimento
-        varchar nome_pai
-        varchar nome_mae
-        varchar endereco
+        varchar2 nome_pai
+        varchar2 nome_mae
+        varchar2 endereco
     }
 
     ATENDIMENTO {
-        int id_atendimento PK
-        varchar numero_atendimento UK
-        datetime data_hora_entrada
-        varchar status
-        int id_paciente FK
+        number id_atendimento PK
+        varchar2 numero_atendimento UK
+        timestamp data_hora_entrada
+        varchar2 status
+        number id_paciente FK
     }
 
     TRIAGEM {
-        int id_triagem PK
-        int id_atendimento FK
-        varchar pressao_arterial
-        decimal temperatura
-        int batimentos_cardiacos
-        varchar queixas
-        int prioridade
+        number id_triagem PK
+        number id_atendimento FK
+        varchar2 pressao_arterial
+        number temperatura
+        number batimentos_cardiacos
+        varchar2 queixas
+        number prioridade
     }
 
     PRESCRICAO {
-        int id_prescricao PK
-        int id_atendimento FK
-        varchar medicamento
-        varchar dosagem
+        number id_prescricao PK
+        number id_atendimento FK
+        varchar2 medicamento
+        varchar2 dosagem
     }
 ```
 
@@ -74,4 +74,4 @@ _Ajustar conforme decisão final da equipe._
 
 - Front-end: HTML, CSS, JavaScript
 - Back-end: Node.js / JavaScript
-- Banco de dados: SQL relacional
+- Banco de dados: Oracle (SQL + PL/SQL) — script de criação em `banco.md`

@@ -27,7 +27,7 @@ Baseado no descritivo do escopo. Três arquivos HTML, um por perfil, cada um con
  
 \* **Regra do responsável para menores de idade:** se o paciente for menor de 18 anos (calculado a partir de `data_nascimento`), pelo menos um dos dois — `nome_pai` OU `nome_mae` — precisa vir preenchido. Se for maior de idade, os dois continuam opcionais. A validação de verdade acontece no back-end (na trigger/lógica antes do INSERT); o front pode replicar essa checagem em JS só pra dar feedback imediato, mas isso é enfeite, não a barreira real.
  
-O `numero_atendimento` (ex: `AT0001`) **não é digitado nem gerado pelo Node.js** — é preenchido por uma trigger em PL/SQL no Oracle, no momento do INSERT (ver `planejamento-backend.md`, item 3). O formulário da recepção nem precisa desse campo no corpo da requisição.
+O `numero_atendimento` (ex: `AT0001`) **não é digitado nem gerado pelo Node.js** — é preenchido por uma trigger em PL/SQL no Oracle, no momento do INSERT (ver `Back_Planejamento.md`, item 3). O formulário da recepção nem precisa desse campo no corpo da requisição.
  
 ### Rotas consumidas
  
