@@ -4,6 +4,7 @@ Sistema web para controle do fluxo de atendimento em um Pronto Socorro, da chega
 
 ## O processo
 
+0. **Acesso** — cada funcionário entra com login e senha próprios. O perfil (`recepcao`, `enfermagem`, `medico` ou `admin`) define qual tela ele enxerga.
 1. **Recepção** — cadastra o paciente e abre o atendimento, gerando um número único (ex: `AT0001`).
 2. **Triagem (Enfermagem)** — registra sinais vitais e classifica o risco conforme o Protocolo de Manchester.
 3. **Atendimento médico** — o médico chama por prioridade, registra medicações e confirma a consulta.
@@ -12,11 +13,17 @@ Sistema web para controle do fluxo de atendimento em um Pronto Socorro, da chega
 
 | Camada | Responsabilidade |
 |---|---|
-| Front-end | Recepção (incluir/alterar/consultar/cancelar), Triagem (lançar dados vitais), Médico (Painel de Atendimentos + medicações/confirmação) |
-| Back-end | Conecta as três interfaces e persiste os dados |
+| Front-end | Login, Recepção (incluir/alterar/consultar/cancelar), Triagem (lançar dados vitais), Médico (Painel de Atendimentos + medicações/confirmação) |
+| Back-end | Autentica o usuário, controla o acesso por perfil, conecta as três interfaces e persiste os dados |
 | Banco de dados | Relacional (Oracle), 8 tabelas: `paciente`, `atendimento`, `triagem`, `prescricao`, `funcionario`, `usuario`, `medico`, `enfermeiro` |
 
 ## Modelo de dados
+
+Diagrama entidade-relacionamento (MER): `Modelo.png`. Script de criação em Oracle: `banco.md`.
+
+![Modelo entidade-relacionamento](Modelo.png)
+
+Versão em mermaid:
 
 ```mermaid
 erDiagram
@@ -123,3 +130,4 @@ _Ajustar conforme decisão final da equipe._
 - Front-end: HTML, CSS, JavaScript
 - Back-end: Node.js / JavaScript
 - Banco de dados: Oracle (SQL + PL/SQL) — script de criação em `banco.md`
+- Hospedagem do banco: _a definir_ (opções: Oracle XE local com Docker, Oracle Cloud Free Tier)
