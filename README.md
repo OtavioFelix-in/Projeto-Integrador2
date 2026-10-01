@@ -31,6 +31,9 @@ erDiagram
     USUARIO {
         int id_usuario PK
         varchar nome
+        varchar cpf UK
+        varchar telefone
+        varchar email
         varchar login UK
         varchar senha_hash
         varchar perfil
@@ -58,6 +61,9 @@ erDiagram
         varchar status
         int id_medico FK
         datetime data_hora_confirmacao
+        varchar diagnostico
+        varchar avaliacao_medica
+        datetime data_hora_saida
     }
 
     TRIAGEM {
@@ -82,11 +88,11 @@ erDiagram
 
 ### Notas do modelo
 
-- `usuario` guarda o login simples. A senha fica como hash (bcrypt), nunca em texto puro.
+- `usuario` guarda o login simples, com `cpf`, `telefone` e `email` (opcional) do profissional. A senha fica como hash (bcrypt), nunca em texto puro.
 - `paciente` exige pelo menos um documento: `cpf` ou `rg` (CHECK). Se o paciente for menor de 18 anos, `nome_pai` ou `nome_mae` é obrigatório, validado no back-end.
 - `atendimento.status` controla o fluxo: `aberto` → `triado` → `confirmado` (ou `cancelado`). A recepção só pode alterar/cancelar enquanto não estiver `confirmado`.
 - `atendimento.numero_atendimento` (`AT0001`) é preenchido logo após o INSERT, a partir do `id_atendimento`.
-- `atendimento.id_medico` e `data_hora_confirmacao` registram quem confirmou a consulta e quando.
+- `atendimento.id_medico` e `data_hora_confirmacao` registram quem confirmou a consulta e quando. `diagnostico`, `avaliacao_medica` e `data_hora_saida` (alta) são preenchidos pelo médico.
 - `triagem` é 1:1 com `atendimento` (`id_atendimento` é `UNIQUE`) — cada atendimento passa pela enfermagem uma única vez. `id_usuario` registra quem fez a triagem e `queixas` guarda as principais queixas em um único campo.
 - `prioridade` guarda a classificação de Manchester como número (1 a 5), não como tabela separada — o back-end faz a conversão cor ↔ número. Isso mantém o `ORDER BY` do Painel do Médico simples, direto no SQL.
 - `prescricao` é 1:N — um atendimento pode ter várias medicações lançadas (medicamento, dosagem e frequência).
