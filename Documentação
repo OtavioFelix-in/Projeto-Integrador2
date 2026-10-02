@@ -64,6 +64,46 @@ Os principais dados utilizados pelo sistema serão os dados dos pacientes, infor
 
 Os requisitos funcionais representam as principais funções que o sistema deverá realizar.
 
+### 5.1 Identificação de usuário (cadastro e seleção)
+
+**Objetivo:** permitir que o sistema identifique os profissionais responsáveis pelas etapas de recepção, triagem e atendimento médico.
+
+**Descrição:** o sistema deve permitir o cadastro e a autenticação dos profissionais. Cada usuário deve possuir um perfil de acesso — recepção, enfermagem ou médico — que define qual interface e quais funções podem ser utilizadas.
+
+**Entradas mínimas:**
+
+- Nome;
+- CPF;
+- telefone;
+- e-mail, quando informado;
+- login;
+- senha;
+- perfil de acesso.
+
+**Processamento e regras:**
+
+- Gerar um identificador numérico para cada usuário;
+- garantir que CPF e login sejam únicos;
+- validar os campos obrigatórios;
+- armazenar a senha de forma segura, utilizando hash bcrypt;
+- permitir apenas os perfis recepção, enfermagem ou médico;
+- controlar se o usuário está ativo;
+- restringir o acesso às funções correspondentes ao perfil do usuário.
+
+**Saídas e resultado esperado:**
+
+- Usuário cadastrado e armazenado no banco de dados;
+- autenticação realizada por login e senha;
+- acesso direcionado à interface correspondente ao perfil do profissional.
+
+**Critérios de aceite:**
+
+- Permitir cadastrar o profissional e persistir os dados no MySQL;
+- impedir o cadastro de CPF ou login já existente;
+- validar os campos obrigatórios;
+- autenticar somente usuários ativos com credenciais válidas;
+- impedir que o usuário acesse funções de outro perfil.
+
 | Identificador | Nome | Descrição |
 |---|---|---|
 | RF01 | Cadastrar paciente | Permitir o cadastro dos dados pessoais do paciente. |
