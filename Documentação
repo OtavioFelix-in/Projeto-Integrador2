@@ -1,0 +1,146 @@
+PROJETO INTEGRADOR 2
+SISTEMA DE ATENDIMENTO DE PRONTO SOCORRO
+PUC-Campinas
+2026
+
+
+1. INTRODUÇÃO
+Atualmente, hospitais e pronto-socorro recebem uma grande quantidade de pacientes diariamente. Com a alta demanda, podem ocorrer filas, demora no atendimento e dificuldades para organizar os pacientes de acordo com a necessidade de cada caso.
+Em algumas situações, seguir apenas a ordem de chegada não é suficiente, pois existem pacientes que precisam de atendimento com maior prioridade. Por isso, é importante que os atendimentos sejam organizados de forma que os profissionais consigam identificar quais pacientes precisam ser atendidos primeiro.
+Dentro da proposta do Projeto Integrador 2, foi definido o desenvolvimento de um Sistema de Atendimento de Pronto Socorro. O sistema tem como objetivo auxiliar na organização dos atendimentos, acompanhando o paciente desde sua chegada à recepção, passando pela triagem, até o atendimento médico.
+A proposta é facilitar a organização das informações dos pacientes e ajudar os profissionais a visualizarem os atendimentos que estão aguardando. Para isso, o sistema contará com etapas de cadastro, triagem, classificação e atendimento médico.
+O projeto ainda está em desenvolvimento, portanto, algumas funcionalidades e telas ainda serão acrescentadas durante as próximas etapas.
+
+2. JUSTIFICATIVA
+O desenvolvimento do sistema está relacionado às dificuldades que podem ocorrer durante o atendimento em pronto-socorro, principalmente em períodos de grande quantidade de pacientes.
+Filas grandes e dificuldades na organização dos atendimentos podem aumentar o tempo de espera e dificultar o trabalho dos profissionais. Além disso, pacientes que precisam de atendimento mais rápido podem ter que esperar junto com outros casos menos urgentes quando não existe uma boa organização da fila.
+Dessa forma, o sistema proposto busca auxiliar na organização dos pacientes e das informações dos atendimentos, facilitando o trabalho dos profissionais responsáveis pela recepção, triagem e atendimento médico.
+A proposta também pode ser útil em locais que possuem uma estrutura menor e uma quantidade reduzida de profissionais, ajudando na organização dos atendimentos e no melhor aproveitamento dos recursos disponíveis.
+
+3. OBJETIVOS
+
+3.1 Objetivo geral
+Desenvolver um sistema para auxiliar na organização dos atendimentos de um pronto-socorro, acompanhando o paciente desde sua chegada até o atendimento médico.
+
+3.2 Objetivos específicos
+• Cadastrar os pacientes;
+• Gerar um número para cada atendimento;
+• Registrar as informações da triagem;
+• Classificar os pacientes de acordo com a prioridade;
+• Organizar a fila de atendimento;
+• Facilitar a visualização dos pacientes pelos médicos;
+• Registrar as informações do atendimento médico;
+• Auxiliar no controle dos atendimentos.
+
+4. ESCOPO
+O sistema será desenvolvido para auxiliar na organização dos atendimentos de um pronto-socorro.
+O processo será dividido em três etapas principais: recepção, triagem e atendimento médico.
+Na recepção, serão cadastrados os dados pessoais do paciente e será gerado um número de atendimento. Também será possível consultar, alterar ou cancelar um atendimento quando necessário.
+Na triagem, serão registradas informações como pressão arterial, temperatura corporal, batimentos cardíacos e as principais queixas do paciente. Nessa etapa também será realizada a classificação do atendimento.
+Após a triagem, o paciente ficará disponível para o atendimento médico. O médico poderá visualizar os pacientes que estão aguardando e acessar as informações do atendimento.
+Os principais usuários do sistema serão os profissionais responsáveis pela recepção, triagem e atendimento médico.
+Os principais dados utilizados pelo sistema serão os dados dos pacientes, informações da triagem, classificação do atendimento e informações registradas pelo médico.
+
+5. REQUISITOS FUNCIONAIS
+Os requisitos funcionais representam as principais funções que o sistema deverá realizar.
+Identificador
+Nome
+Descrição
+RF01
+Cadastrar paciente
+Permitir o cadastro dos dados pessoais do paciente.
+RF02
+Criar atendimento
+Gerar um número para cada atendimento.
+RF03
+Consultar atendimento
+Permitir visualizar as informações de um atendimento.
+RF04
+Alterar atendimento
+Permitir alterações no atendimento enquanto ele não estiver confirmado pelo médico.
+RF05
+Cancelar atendimento
+Permitir cancelar um atendimento quando necessário.
+RF06
+Registrar triagem
+Registrar as informações coletadas durante a triagem.
+RF07
+Registrar sinais vitais
+Registrar pressão, temperatura e batimentos cardíacos.
+RF08
+Registrar queixas
+Registrar as principais queixas apresentadas pelo paciente.
+RF09
+Classificar atendimento
+Registrar a classificação do paciente durante a triagem.
+RF10
+Visualizar fila
+Mostrar os pacientes que estão aguardando atendimento.
+RF11
+Organizar prioridade
+Organizar os atendimentos de acordo com sua classificação.
+RF12
+Acessar atendimento
+Permitir que o médico acesse as informações do paciente.
+RF13
+Registrar medicações
+Permitir que o médico registre as medicações utilizadas no atendimento.
+RF14
+Confirmar atendimento
+Permitir que o médico confirme o atendimento realizado.
+RF15
+Painel de atendimento
+Mostrar a sequência dos pacientes que aguardam atendimento.
+
+6. REQUISITOS NÃO FUNCIONAIS
+Os requisitos não funcionais estão relacionados às características que o sistema deverá apresentar.
+• Facilidade de uso: o sistema deverá possuir uma interface simples para facilitar sua utilização pelos profissionais.
+• Segurança: os dados dos pacientes deverão ser protegidos contra acessos não autorizados.
+• Desempenho: as informações deverão ser carregadas de forma rápida durante a utilização do sistema.
+• Organização: as informações deverão ser apresentadas de forma clara e organizada.
+• Confiabilidade: os dados cadastrados deverão ser armazenados corretamente.
+• Manutenção: o sistema deverá permitir futuras alterações e melhorias.
+• Banco de dados: as informações do sistema deverão ser armazenadas em um banco de dados.
+
+7. METODOLOGIA APLICADA AO PROJETO
+O projeto está sendo desenvolvido utilizando a metodologia PBL (Aprendizagem Baseada em Projetos), proposta na disciplina de Projeto Integrador 2.
+O desenvolvimento começou com a apresentação do tema e a definição do problema que deveria ser trabalhado. Após isso, foram levantadas informações sobre o funcionamento de um pronto-socorro e sobre as principais etapas do atendimento.
+Em seguida, foram definidas as principais funções que o sistema deverá possuir e começou o desenvolvimento do banco de dados e das primeiras partes do sistema.
+Durante o desenvolvimento, a equipe realiza reuniões, pesquisas, programação e testes. As atividades também são revisadas para que possíveis problemas possam ser corrigidos.
+Como o projeto ainda está no início, algumas partes ainda estão sendo desenvolvidas e poderão sofrer alterações durante as próximas etapas.
+
+8. CRONOGRAMA EXECUTADO
+O cronograma apresenta as atividades realizadas durante o desenvolvimento do projeto, juntamente com os integrantes responsáveis, as datas e o tempo utilizado.
+As principais atividades realizadas até o momento envolvem a definição do sistema, pesquisas sobre o tema, levantamento das funções, desenvolvimento do banco de dados e início da programação, todas as informações estão atualizadas no trello.
+
+9. MODELAGEM DO BANCO DE DADOS
+O banco de dados será utilizado para armazenar as principais informações necessárias para o funcionamento do sistema.
+Entre essas informações estão os dados dos pacientes, médicos e atendimentos. A organização do banco permite relacionar essas informações para que possam ser utilizadas durante as diferentes etapas do atendimento.
+Figura 1 – Modelagem do banco de dados do Sistema de Atendimento de Pronto Socorro.
+
+10. PROTÓTIPOS
+As telas do sistema ainda estão em desenvolvimento. Até o momento, foram criadas algumas amostras iniciais que servem como base para o desenvolvimento da interface.
+Entre as telas previstas estão as de cadastro do paciente, triagem, fila de atendimento e atendimento médico.
+Como o projeto ainda não está concluído, os protótipos poderão ser modificados conforme o desenvolvimento do sistema.
+
+11. CONCLUSÃO
+O projeto ainda está em sua fase inicial de desenvolvimento, portanto não é possível apresentar uma conclusão definitiva sobre todos os resultados.
+Até o momento, foram definidas as principais etapas do sistema, suas funções e a estrutura inicial do banco de dados. Também foi iniciado o desenvolvimento das primeiras partes do sistema.
+A proposta é que, ao final do desenvolvimento, o sistema consiga auxiliar na organização dos pacientes, facilitar a visualização da fila e ajudar os profissionais durante o processo de atendimento.
+As próximas etapas serão importantes para finalizar as funcionalidades, realizar testes e verificar se o sistema atende aos objetivos definidos no projeto.
+
+11.1 RESULTADOS OBTIDOS
+Até o momento, foram obtidos os seguintes resultados:
+• Definição do funcionamento básico do sistema;
+• Identificação das principais etapas do atendimento;
+• Início do desenvolvimento do banco de dados;
+• Início da programação do sistema;
+• Criação de algumas amostras das telas;
+• Organização das atividades da equipe.
+Como o sistema ainda está sendo desenvolvido, novos resultados serão apresentados conforme o projeto avançar.
+
+11.2 SUGESTÕES DE MELHORIAS
+ 
+ 
+REFERÊNCIAS
+ 
