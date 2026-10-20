@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pronto Socorro - Médico</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Painel de Atendimentos</h1>
+  <p><span id="nomeUsuario"></span> <button id="sair">Sair</button></p>
+
+  <button id="atualizar">Atualizar</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Prioridade</th>
+        <th>Número</th>
+        <th>Paciente</th>
+        <th>Idade</th>
+        <th>Queixas</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="painel"></tbody>
+  </table>
+
+  <div id="consulta" hidden>
+    <h2 id="tituloConsulta"></h2>
+    <p id="dadosTriagem"></p>
+
+    <h3>Medicações</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Medicamento</th>
+          <th>Dosagem</th>
+          <th>Frequência</th>
+        </tr>
+      </thead>
+      <tbody id="prescricoes"></tbody>
+    </table>
+
+    <form id="formPrescricao">
+      <label>Medicamento
+        <input type="text" id="medicamento" required>
+      </label>
+      <label>Dosagem
+        <input type="text" id="dosagem" required>
+      </label>
+      <label>Frequência
+        <input type="text" id="frequencia" required>
+      </label>
+      <button type="submit">Adicionar medicação</button>
+    </form>
+
+    <h3>Confirmar consulta</h3>
+    <form id="formConfirmar">
+      <label>Diagnóstico
+        <input type="text" id="diagnostico" maxlength="300" required>
+      </label>
+      <button type="submit">Confirmar consulta</button>
+      <button type="button" id="fechar">Fechar</button>
+    </form>
+  </div>
+  <p id="mensagem"></p>
+
+  <script src="js/medico.js"></script>
+</body>
+</html>
