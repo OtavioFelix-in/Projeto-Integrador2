@@ -208,13 +208,11 @@ As principais tecnologias utilizadas foram:
 
 **Back-End**
 
-- **Node.js:** utilizado para executar o JavaScript no lado do servidor, permitindo o processamento das informações, a aplicação das regras de funcionamento do sistema e a comunicação entre o Front-End e o banco de dados.
-
 O Back-End é responsável por processar as operações realizadas nas interfaces, validar as informações e garantir que os dados sejam armazenados e consultados corretamente.
 
 **Banco de dados**
 
-- **Oracle Database:** utilizado para armazenar e organizar as informações dos pacientes, usuários e atendimentos, permitindo o relacionamento entre os dados necessários ao funcionamento do sistema.
+- **MySQL:** utilizado para armazenar e organizar as informações dos pacientes, usuários e atendimentos, permitindo o relacionamento entre os dados necessários ao funcionamento do sistema.
 
 **Ferramentas de desenvolvimento e gerenciamento**
 
