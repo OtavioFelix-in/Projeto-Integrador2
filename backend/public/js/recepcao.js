@@ -18,6 +18,12 @@ function mostrarMensagem(texto, tipo) {
   p.className = tipo;
 }
 
+function escapar(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
 function limparFormulario() {
   document.getElementById('formPaciente').reset();
   document.getElementById('idAtendimento').value = '';
@@ -84,12 +90,11 @@ async function buscar() {
     const tr = document.createElement('tr');
     tr.innerHTML =
       '<td>' + a.numero_atendimento + '</td>' +
-      '<td>' + a.nome_completo + '</td>' +
+      '<td>' + escapar(a.nome_completo) + '</td>' +
       '<td>' + a.data_hora_entrada + '</td>' +
-      '<td>' + a.status + '</td>' +
+      '<td><span class="etiqueta status-' + a.status + '">' + a.status + '</span></td>' +
       '<td class="botoes">' +
-        (podeMexer ? '<button onclick="editar(' + i + ')">Alterar</button>' +
-                     '<button class="secundario" onclick="cancelar(' + a.id_atendimento + ')">Cancelar</button>' : '') +
+        (podeMexer ? '<button class="botao" onclick="editar(' + i + ')">Alterar</button>' + '<button class="botao botao-secundario" onclick="cancelar(' + a.id_atendimento + ')">Cancelar</button>':'') +
       '</td>';
     tbody.appendChild(tr);
   });

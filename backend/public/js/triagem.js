@@ -17,6 +17,12 @@ function mostrarMensagem(texto, tipo) {
   p.className = tipo;
 }
 
+function escapar(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
 async function carregarFila() {
   const resposta = await fetch('/triagem/fila');
   fila = await resposta.json();
@@ -33,10 +39,10 @@ async function carregarFila() {
     const tr = document.createElement('tr');
     tr.innerHTML =
       '<td>' + a.numero_atendimento + '</td>' +
-      '<td>' + a.nome_completo + '</td>' +
+      '<td>' + escapar(a.nome_completo) + '</td>' +
       '<td>' + a.idade + '</td>' +
       '<td>' + a.data_hora_entrada + '</td>' +
-      '<td><button onclick="abrirTriagem(' + i + ')">Fazer triagem</button></td>';
+      '<td><button class="botao" onclick="abrirTriagem(' + i + ')">Fazer triagem</button></td>';
     tbody.appendChild(tr);
   });
 }

@@ -1,92 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Pronto Socorro - Recepção</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <header>
-    <h2>Recepção</h2>
-    <div>
-      <span id="nomeUsuario"></span>
-      <button id="sair">Sair</button>
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">PRONTO<br>SOCORRO</div>
+      <nav>
+        <a href="recepcao.html" class="ativo">Recepção</a>
+      </nav>
+      <button id="sair" class="botao-sair">Sair</button>
+    </aside>
+
+    <div class="conteudo">
+      <header class="topo">
+        <h1>Recepção</h1>
+        <span id="nomeUsuario"></span>
+      </header>
+
+      <main>
+
+        <form id="formPaciente" class="caixa">
+          <h2 id="tituloForm">Novo atendimento</h2>
+          <input type="hidden" id="idAtendimento">
+
+          <label>Nome completo
+            <input type="text" id="nome_completo" required>
+          </label>
+          <div class="form-linha">
+            <label>CPF (só números)
+              <input type="text" id="cpf" maxlength="11">
+            </label>
+            <label>RG
+              <input type="text" id="rg" maxlength="20">
+            </label>
+          </div>
+          <div class="form-linha">
+            <label>Data de nascimento
+              <input type="date" id="data_nascimento" required>
+            </label>
+            <label>Sexo
+              <select id="sexo" required>
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+            </label>
+          </div>
+          <label>Telefone
+            <input type="text" id="telefone" maxlength="11">
+          </label>
+          <div class="form-linha">
+            <label>Nome do pai
+              <input type="text" id="nome_pai">
+            </label>
+            <label>Nome da mãe
+              <input type="text" id="nome_mae">
+            </label>
+          </div>
+          <label>Endereço
+            <input type="text" id="endereco">
+          </label>
+
+          <div class="acoes">
+            <button type="button" class="botao botao-secundario" id="limpar">Limpar</button>
+            <button type="submit" class="botao" id="botaoSalvar">Abrir atendimento</button>
+          </div>
+          <p id="mensagem"></p>
+        </form>
+
+        <section class="caixa">
+          <h2>Consultar atendimento</h2>
+          <div class="form-linha">
+            <label>Número (AT0001) ou CPF
+              <input type="text" id="busca">
+            </label>
+            <button id="botaoBuscar" class="botao">Buscar</button>
+          </div>
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Paciente</th>
+                <th>Entrada</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="resultado"></tbody>
+          </table>
+        </section>
+      </main>
     </div>
-  </header>
-
-  <main>
-    <form id="formPaciente" class="caixa">
-      <h2 id="tituloForm">Novo atendimento</h2>
-      <input type="hidden" id="idAtendimento">
-
-      <label>Nome completo
-        <input type="text" id="nome_completo" required>
-      </label>
-      <div class="linha">
-        <label>CPF (só números)
-          <input type="text" id="cpf" maxlength="11">
-        </label>
-        <label>RG
-          <input type="text" id="rg" maxlength="20">
-        </label>
-      </div>
-      <div class="linha">
-        <label>Data de nascimento
-          <input type="date" id="data_nascimento" required>
-        </label>
-        <label>Sexo
-          <select id="sexo" required>
-            <option value="">Selecione</option>
-            <option value="M">Masculino</option>
-            <option value="F">Feminino</option>
-          </select>
-        </label>
-      </div>
-      <label>Telefone
-        <input type="text" id="telefone" maxlength="11">
-      </label>
-      <div class="linha">
-        <label>Nome do pai
-          <input type="text" id="nome_pai">
-        </label>
-        <label>Nome da mãe
-          <input type="text" id="nome_mae">
-        </label>
-      </div>
-      <label>Endereço
-        <input type="text" id="endereco">
-      </label>
-
-      <div class="botoes">
-        <button type="submit" id="botaoSalvar">Abrir atendimento</button>
-        <button type="button" class="secundario" id="limpar">Limpar</button>
-      </div>
-      <p id="mensagem"></p>
-    </form>
-
-    <section class="caixa">
-      <h2>Consultar atendimento</h2>
-      <div class="busca">
-        <label>Número (AT0001) ou CPF
-          <input type="text" id="busca">
-        </label>
-        <button id="botaoBuscar">Buscar</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Número</th>
-            <th>Paciente</th>
-            <th>Entrada</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="resultado"></tbody>
-      </table>
-    </section>
-  </main>
+  </div>
 
   <script src="js/recepcao.js"></script>
 </body>
+
 </html>
