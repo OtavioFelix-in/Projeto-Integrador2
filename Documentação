@@ -29,9 +29,35 @@ A proposta também pode ser útil em locais que possuem uma estrutura menor e um
 
 ## 3. OBJETIVOS
 
-### 3.1 Objetivo geral
+### 3.1 Identificação do paciente (cadastro e seleção)
 
-Desenvolver um sistema para auxiliar na organização dos atendimentos de um pronto-socorro, acompanhando o paciente desde sua chegada até o atendimento médico.
+Permitir que o sistema identifique os pacientes que serão atendidos no pronto-socorro, mantendo suas informações pessoais associadas aos respectivos atendimentos.
+
+O sistema deverá permitir o cadastro de pacientes na recepção, utilizando seus dados pessoais para identificação. Após o cadastro, deverá ser possível selecionar o paciente para registrar um novo atendimento, gerando um número identificador único para esse atendimento.
+
+O sistema também deverá permitir a consulta, alteração e cancelamento de atendimentos, desde que estes ainda não tenham sido confirmados pelo médico.
+
+Os dados mínimos necessários para o cadastro do paciente são:
+
+- Nome completo do paciente (obrigatório);
+- Endereço;
+- RG;
+- CPF;
+- Nome do pai;
+- Nome da mãe;
+- Data de nascimento.
+
+Outros dados pessoais poderão ser incluídos conforme a necessidade do sistema.
+
+O sistema deverá validar os campos obrigatórios durante o cadastro, gerar um identificador para cada paciente cadastrado e um número único para cada atendimento, seguindo o padrão definido pela equipe (ex.: AT0001).
+
+Também deverá permitir a seleção de pacientes cadastrados para a criação de novos atendimentos, garantindo que cada atendimento esteja associado a um paciente existente. As alterações e os cancelamentos poderão ser realizados enquanto não houver confirmação médica.
+
+Como resultado, espera-se que o paciente seja cadastrado e armazenado no banco de dados, que o número de atendimento seja gerado automaticamente e que suas informações estejam disponíveis para consulta pela recepção.
+
+O cadastro deverá permitir a inclusão dos dados pessoais do paciente, gerar identificadores únicos, associar corretamente os pacientes aos seus respectivos atendimentos e armazenar as informações no banco de dados.
+
+Além disso, deverá permitir consultar, alterar e cancelar atendimentos conforme as regras definidas.
 
 ### 3.2 Objetivos específicos
 
@@ -168,7 +194,34 @@ Entre as telas previstas estão as de cadastro do paciente, triagem, fila de ate
 
 Como o projeto ainda não está concluído, os protótipos poderão ser modificados conforme o desenvolvimento do sistema.
 
-## 11. CONCLUSÃO
+## 11. TECNOLOGIAS UTILIZADAS
+
+Para o desenvolvimento do Sistema de Atendimento de Pronto-Socorro, foram utilizadas tecnologias voltadas à construção de aplicações web, ao armazenamento de informações e à organização do processo de desenvolvimento.
+
+As principais tecnologias utilizadas foram:
+
+**Front-End**
+
+- **HTML:** utilizado para estruturar os elementos das páginas do sistema.
+- **CSS:** utilizado para definir a aparência visual, a organização e a formatação das interfaces.
+- **JavaScript:** utilizado para adicionar interatividade às páginas e permitir a execução de funcionalidades no navegador.
+
+**Back-End**
+
+O Back-End é responsável pelo processamento das informações, pela aplicação das regras de funcionamento do sistema e pela comunicação entre o Front-End e o banco de dados, permitindo que as operações realizadas nas interfaces sejam processadas e armazenadas corretamente.
+
+**Banco de dados**
+
+O Oracle Database foi utilizado como sistema de gerenciamento de banco de dados relacional, responsável pelo armazenamento e pela organização das informações dos pacientes, atendimentos e demais dados necessários ao funcionamento do sistema.
+
+**Ferramentas de desenvolvimento e gerenciamento**
+
+- **GitHub:** utilizado para armazenar o código-fonte, controlar as versões do projeto e acompanhar as alterações realizadas pelos integrantes da equipe.
+- **Trello:** utilizado para organizar e acompanhar as atividades do projeto, permitindo a visualização das tarefas em andamento e concluídas.
+
+A utilização dessas tecnologias contribui para a organização do desenvolvimento, a manutenção do sistema e o gerenciamento das informações relacionadas aos atendimentos do pronto-socorro.
+
+## 12. CONCLUSÃO
 
 O projeto ainda está em sua fase inicial de desenvolvimento, portanto não é possível apresentar uma conclusão definitiva sobre todos os resultados.
 
@@ -178,7 +231,7 @@ A proposta é que, ao final do desenvolvimento, o sistema consiga auxiliar na or
 
 As próximas etapas serão importantes para finalizar as funcionalidades, realizar testes e verificar se o sistema atende aos objetivos definidos no projeto.
 
-### 11.1 RESULTADOS OBTIDOS
+### 12.1 RESULTADOS OBTIDOS
 
 Até o momento, foram obtidos os seguintes resultados:
 
@@ -191,6 +244,6 @@ Até o momento, foram obtidos os seguintes resultados:
 
 Como o sistema ainda está sendo desenvolvido, novos resultados serão apresentados conforme o projeto avançar.
 
-### 11.2 SUGESTÕES DE MELHORIAS
+### 12.2 SUGESTÕES DE MELHORIAS
 
 ## REFERÊNCIAS
