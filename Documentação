@@ -196,7 +196,7 @@ Como o projeto ainda não está concluído, os protótipos poderão ser modifica
 
 ## 11. TECNOLOGIAS UTILIZADAS
 
-Para o desenvolvimento do Sistema de Atendimento de Pronto-Socorro, foram utilizadas tecnologias voltadas à construção de aplicações web, ao armazenamento de informações e à organização do processo de desenvolvimento.
+Para o desenvolvimento do Sistema de Atendimento de Pronto-Socorro, foram utilizadas tecnologias voltadas à construção de aplicações web, ao processamento das informações, ao armazenamento de dados e ao gerenciamento do projeto.
 
 As principais tecnologias utilizadas foram:
 
@@ -208,11 +208,13 @@ As principais tecnologias utilizadas foram:
 
 **Back-End**
 
-O Back-End é responsável pelo processamento das informações, pela aplicação das regras de funcionamento do sistema e pela comunicação entre o Front-End e o banco de dados, permitindo que as operações realizadas nas interfaces sejam processadas e armazenadas corretamente.
+- **Node.js:** utilizado para executar o JavaScript no lado do servidor, permitindo o processamento das informações, a aplicação das regras de funcionamento do sistema e a comunicação entre o Front-End e o banco de dados.
+
+O Back-End é responsável por processar as operações realizadas nas interfaces, validar as informações e garantir que os dados sejam armazenados e consultados corretamente.
 
 **Banco de dados**
 
-O Oracle Database foi utilizado como sistema de gerenciamento de banco de dados relacional, responsável pelo armazenamento e pela organização das informações dos pacientes, atendimentos e demais dados necessários ao funcionamento do sistema.
+- **Oracle Database:** utilizado para armazenar e organizar as informações dos pacientes, usuários e atendimentos, permitindo o relacionamento entre os dados necessários ao funcionamento do sistema.
 
 **Ferramentas de desenvolvimento e gerenciamento**
 
