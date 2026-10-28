@@ -9,12 +9,12 @@ document.getElementById('sair').addEventListener('click', () => {
   window.location.href = 'login.html';
 });
 
-const cores = {
-  1: 'Vermelho',
-  2: 'Laranja',
-  3: 'Amarelo',
-  4: 'Verde',
-  5: 'Azul'
+const prioridades = {
+  1: 'Emergência',
+  2: 'Muito Urgente',
+  3: 'Urgente',
+  4: 'Pouco Urgente',
+  5: 'Não Urgente'
 };
 
 let painel = [];
@@ -26,9 +26,33 @@ function mostrarMensagem(texto, tipo) {
   p.className = tipo;
 }
 
+function minutosDesde(dataHora) {
+  const inicio = new Date(dataHora.replace(' ', 'T'));
+  return Math.floor((Date.now() - inicio) / 60000);
+}
+
+function atualizarResumo() {
+  document.getElementById('totalAguardando').textContent = painel.length;
+
+  const graves = painel.filter(a => a.prioridade <= 2);
+  document.getElementById('totalGraves').textContent = graves.length;
+
+  if (painel.length === 0) {
+    document.getElementById('esperaMedia').textContent = 0;
+    return;
+  }
+
+  let soma = 0;
+  painel.forEach(a => {
+    soma += minutosDesde(a.data_hora);
+  });
+  document.getElementById('esperaMedia').textContent = Math.round(soma / painel.length);
+}
+
 async function carregarPainel() {
   const resposta = await fetch('/painel');
   painel = await resposta.json();
+  atualizarResumo();
 
   const tbody = document.getElementById('painel');
   tbody.innerHTML = '';
@@ -41,12 +65,12 @@ async function carregarPainel() {
   painel.forEach((a, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML =
-      '<td>' + cores[a.prioridade] + '</td>' +
+      '<td><span class="etiqueta prioridade-' + a.prioridade + '">' + prioridades[a.prioridade] + '</span></td>' +
       '<td>' + a.numero_atendimento + '</td>' +
-      '<td>' + a.nome_completo + '</td>' +
+      '<td>' + escapar(a.nome_completo) + '</td>' +
       '<td>' + a.idade + '</td>' +
-      '<td>' + a.queixas + '</td>' +
-      '<td><button onclick="chamar(' + i + ')">Chamar</button></td>';
+      '<td>' + escapar(a.queixas) + '</td>' +
+      '<td><button class="botao" onclick="chamar(' + i + ')">Chamar</button></td>';
     tbody.appendChild(tr);
   });
 }
@@ -65,9 +89,15 @@ async function carregarPrescricoes() {
 
   lista.forEach(m => {
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + m.medicamento + '</td><td>' + m.dosagem + '</td><td>' + m.frequencia + '</td>';
+    tr.innerHTML = '<td>' + escapar(m.medicamento) + '</td><td>' + escapar(m.dosagem) + '</td><td>' + escapar(m.frequencia) + '</td>';
     tbody.appendChild(tr);
   });
+}
+
+function escapar(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto;
+  return div.innerHTML;
 }
 
 function chamar(i) {
@@ -75,15 +105,15 @@ function chamar(i) {
   document.getElementById('consulta').hidden = false;
   document.getElementById('tituloConsulta').textContent =
     atual.numero_atendimento + ' - ' + atual.nome_completo + ' (' + atual.idade + ' anos)';
-  document.getElementById('dadosTriagem').textContent =
-    'Pressão: ' + atual.pressao_arterial +
-    ' | Temperatura: ' + atual.temperatura + ' °C' +
-    ' | Batimentos: ' + atual.batimentos_cardiacos + ' bpm' +
-    ' | Queixas: ' + atual.queixas;
+  document.getElementById('sinalPressao').textContent = atual.pressao_arterial;
+  document.getElementById('sinalTemperatura').textContent = atual.temperatura + ' °C';
+  document.getElementById('sinalBatimentos').textContent = atual.batimentos_cardiacos + ' bpm';
+  document.getElementById('sinalQueixas').textContent = atual.queixas;
   document.getElementById('formPrescricao').reset();
   document.getElementById('formConfirmar').reset();
   mostrarMensagem('', '');
   carregarPrescricoes();
+  document.getElementById('consulta').scrollIntoView({ behavior: 'smooth'});
 }
 
 document.getElementById('formPrescricao').addEventListener('submit', async (evento) => {
