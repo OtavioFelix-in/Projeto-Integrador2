@@ -93,11 +93,39 @@ CREATE TABLE prescricao (
     CONSTRAINT fk_prescricao_medicamento FOREIGN KEY (id_medicamento) REFERENCES medicamento (id_medicamento)
 );
 
--- Usuários de teste: login recepcao / enfermagem / medico, senha 123 (hash bcrypt)
+-- Equipe de teste: 10 recepção, 10 enfermagem, 10 médicos. O login é o CPF.
+-- As senhas estão no README (aqui fica só o hash bcrypt)
 INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil) VALUES
-    ('Recepcionista Teste', '11111111111', '19911111111', NULL, 'recepcao',   '$2a$10$vEzRVwkt1ryy0HfwUMON1u4n6J09fDOksEEGnDSD9MDOuiihuRfx2', 'recepcao'),
-    ('Enfermeira Teste',    '22222222222', '19922222222', NULL, 'enfermagem', '$2a$10$vEzRVwkt1ryy0HfwUMON1u4n6J09fDOksEEGnDSD9MDOuiihuRfx2', 'enfermagem'),
-    ('Medico Teste',        '33333333333', '19933333333', NULL, 'medico',     '$2a$10$vEzRVwkt1ryy0HfwUMON1u4n6J09fDOksEEGnDSD9MDOuiihuRfx2', 'medico');
+    ('Ana Paula Ferreira', '10736842705', '19981234567', 'ana.ferreira@prontosocorro.exemplo.com', '10736842705', '$2b$10$FVB4gT7y77rT5ZjOoErBu.jjyzzhJVz0sPL7NyTMUr.p4S2MX6S5i', 'recepcao'),
+    ('Bruno Henrique Lima', '11473685460', '19982469134', 'bruno.lima@prontosocorro.exemplo.com', '11473685460', '$2b$10$o2OLlnfXzadLmjNvPPpPuuru2tdcxnxoH6C1kzE.4nb.5lLkJea2G', 'recepcao'),
+    ('Camila Rodrigues Souza', '12210528100', '19983703701', 'camila.souza@prontosocorro.exemplo.com', '12210528100', '$2b$10$FRRVcQrutK0eCmirWZ3ZR.UQUV8HwaOl3XEcHIqg/sDdUMzzZ5j26', 'recepcao'),
+    ('Diego Martins Alves', '12947370821', '19984938268', 'diego.alves@prontosocorro.exemplo.com', '12947370821', '$2b$10$tIHAFBb8UT/mZCISuhFb8usXKDWQCN3I0lwrB1P.dMPhv.9mEfSAG', 'recepcao'),
+    ('Fernanda Costa Ribeiro', '13684213500', '19986172835', 'fernanda.ribeiro@prontosocorro.exemplo.com', '13684213500', '$2b$10$hohOQ7GVCWxEPn5b6RasKuJagUlesmWJB68XqtA3mXCcx8orO2fd2', 'recepcao'),
+    ('Gustavo Pereira Nunes', '14421056235', '19987407402', 'gustavo.nunes@prontosocorro.exemplo.com', '14421056235', '$2b$10$O6Kzvkm8sURSg2phReUgCOyV4lOLsnefBM6k50SZzwAnPLNAy4Raq', 'recepcao'),
+    ('Juliana Almeida Rocha', '15157898967', '19988641969', 'juliana.rocha@prontosocorro.exemplo.com', '15157898967', '$2b$10$4JP7G/HhXOxASMuYw7MdTONQeLricnNChicbQMVB1DTAaXM5vh2FS', 'recepcao'),
+    ('Lucas Oliveira Prado', '15894741637', '19989876536', 'lucas.prado@prontosocorro.exemplo.com', '15894741637', '$2b$10$SBITwCB0i76j9B7L8vT5xuN5/9MHrKR1WCAOzfzhzGS7.KK.h6wQC', 'recepcao'),
+    ('Mariana Gomes Teixeira', '16631584361', '19991111103', 'mariana.teixeira@prontosocorro.exemplo.com', '16631584361', '$2b$10$POKlNBbfXat1g.PBBZb2uO9gx7/.SCOeqcnazKTQmbKfl4u7H4w8S', 'recepcao'),
+    ('Rafael Carvalho Dias', '17368427060', '19992345670', 'rafael.dias@prontosocorro.exemplo.com', '17368427060', '$2b$10$qEVk.1QjwtWi4cYdlI9gvOklI9GnCX91RcmOIV557Fg9WKbZ.Hl2O', 'recepcao'),
+    ('Beatriz Santos Moreira', '18105269732', '19993580237', 'beatriz.moreira@prontosocorro.exemplo.com', '18105269732', '$2b$10$XgjrGItXKlaHG0rmG.09o.yf1hjpOCAMOxKCSYoONEBXIzz3F6mPC', 'enfermagem'),
+    ('Carla Mendes Barbosa', '18842112402', '19994814804', 'carla.barbosa@prontosocorro.exemplo.com', '18842112402', '$2b$10$ngsb1Qu/.rBjoop/DJXIau75k4lUcgu945hx1fcaFUSmpM4eW68YS', 'enfermagem'),
+    ('Daniela Freitas Lopes', '19578955197', '19996049371', 'daniela.lopes@prontosocorro.exemplo.com', '19578955197', '$2b$10$Gf.U.Ui/jkLWgdxCNTyureJ9bcViQw0cUVuoS6mwdDXgQR77k0Iay', 'enfermagem'),
+    ('Eduardo Ramos Cardoso', '20315797894', '19997283938', 'eduardo.cardoso@prontosocorro.exemplo.com', '20315797894', '$2b$10$Nb2Y/Tf8MCWPOWIaRwYCMeL8Ds44w.pRtoIcmcWO0BF/QsL/5h2yS', 'enfermagem'),
+    ('Gabriela Araujo Pinto', '21052640508', '19998518505', 'gabriela.pinto@prontosocorro.exemplo.com', '21052640508', '$2b$10$j22Q91MxbP1e4CQduvhqU.JElHQGVFBGJYap7BvgPjBr0eofNH2x6', 'enfermagem'),
+    ('Helena Duarte Campos', '21789483247', '19999753072', 'helena.campos@prontosocorro.exemplo.com', '21789483247', '$2b$10$wnmTaoUa6bZe1T.4xGx7eePz6ujTP0KzwEXoVivMNE6NI0zwq/ciG', 'enfermagem'),
+    ('Igor Fernandes Vieira', '22526325935', '19980987640', 'igor.vieira@prontosocorro.exemplo.com', '22526325935', '$2b$10$M.7OQrqIjk4.fASVAM6JDeqokZEPHVUpV7fUq7f.92ElxZ5votoxC', 'enfermagem'),
+    ('Larissa Monteiro Cruz', '23263168606', '19982222207', 'larissa.cruz@prontosocorro.exemplo.com', '23263168606', '$2b$10$qYMLziEA4Lb2l.VBA61kw.qFoRfo/n8.SmAKDxgcoXK2eo1J41JAq', 'enfermagem'),
+    ('Patricia Azevedo Reis', '24000011383', '19983456774', 'patricia.reis@prontosocorro.exemplo.com', '24000011383', '$2b$10$NN6ZOqMK3pSXwELXiO875uqk8a7PP49rher8cl1sfFf31pDeAorPG', 'enfermagem'),
+    ('Thiago Correia Batista', '24736854014', '19984691341', 'thiago.batista@prontosocorro.exemplo.com', '24736854014', '$2b$10$mxay0ptrZiBqfOb21SYopeNb6hhHvPI3tHGaXQ5DmGWpihwFWMhTS', 'enfermagem'),
+    ('Andre Luiz Cavalcanti', '25473696724', '19985925908', 'andre.cavalcanti@prontosocorro.exemplo.com', '25473696724', '$2b$10$yMGgWqqOwds2QYkeCOali.9WHF/jkNP1NhbvKiuiBNZqsCbxKnxYi', 'medico'),
+    ('Claudia Regina Fonseca', '26210539475', '19987160475', 'claudia.fonseca@prontosocorro.exemplo.com', '26210539475', '$2b$10$hSpSdItWxRDQqC/MYpBQUO.aY1EbkwsUDaODQzVitfdC91Yld.k/K', 'medico'),
+    ('Felipe Augusto Machado', '26947382149', '19988395042', 'felipe.machado@prontosocorro.exemplo.com', '26947382149', '$2b$10$1rElBLtaJbGDzuE5K/0R9OrnAgixK3edf604PbHBbUAuMMZoUBfMy', 'medico'),
+    ('Isabela Torres Medeiros', '27684224875', '19989629609', 'isabela.medeiros@prontosocorro.exemplo.com', '27684224875', '$2b$10$uhdkWxpyJUvDWyvHNf.W.OP.lWtRtHfh6KDwWX76zjc4ZvgrUyRGq', 'medico'),
+    ('Joao Pedro Sampaio', '28421067508', '19990864176', 'joao.sampaio@prontosocorro.exemplo.com', '28421067508', '$2b$10$15OWDH6bxg6jUjCMnxoL8uIQLehL4PjAR7enp/f7tS9KPB.V2ye1K', 'medico'),
+    ('Leticia Moura Andrade', '29157910235', '19992098743', 'leticia.andrade@prontosocorro.exemplo.com', '29157910235', '$2b$10$9est3TR8P3ptYk45Y8BOVeJa.Cn3gH37qNF0W8eJ/C9ArleCIdwNS', 'medico'),
+    ('Marcelo Antunes Brito', '29894752900', '19993333310', 'marcelo.brito@prontosocorro.exemplo.com', '29894752900', '$2b$10$EcraR87of9TnMT7wclTlL.PbW0lUzd4truv./KpO87scgo17lv/RC', 'medico'),
+    ('Natalia Farias Coelho', '30631595651', '19994567877', 'natalia.coelho@prontosocorro.exemplo.com', '30631595651', '$2b$10$61iiMDMgqBo6DWpASfX0delCkBZNgMdCHYzsWWampqEhIVTK6HBRK', 'medico'),
+    ('Ricardo Bastos Siqueira', '31368438350', '19995802444', 'ricardo.siqueira@prontosocorro.exemplo.com', '31368438350', '$2b$10$XnPKWk0J/XTL.l752obgMu2/ESTlNsVK35ttp2PVZtCiXlG/G/8MG', 'medico'),
+    ('Vanessa Lima Guimaraes', '32105281010', '19997037011', 'vanessa.guimaraes@prontosocorro.exemplo.com', '32105281010', '$2b$10$YbuzlMmT780ATL4nqQut2..kIkcn.eMhxjQgC4fYAvcOH4VXJDmU.', 'medico');
 
 -- Lista inicial de medicamentos comuns de pronto socorro
 INSERT INTO medicamento (nome, apresentacao) VALUES

@@ -1,4 +1,4 @@
-// quem fez login (guardado pelo login.js)
+// quem fez login (o login.js guardou no sessionStorage)
 const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 
 // sem login ou com outro perfil, volta pro login
@@ -42,37 +42,23 @@ function celula(tr, texto) {
   return td;
 }
 
-// minutos que passaram desde uma data do banco ('2026-10-28 14:30:00')
-function minutosDesde(dataHora) {
-  const inicio = new Date(dataHora.replace(' ', 'T'));
-  return Math.floor((Date.now() - inicio) / 60000);
-}
-
-// cartões do topo: quantos esperam, quantos graves e espera média
+// cartões do topo: quantos esperam e quantos são graves
 function atualizarResumo() {
   document.getElementById('totalAguardando').textContent = painel.length;
 
+  // filter separa só os que passam na condição
   const graves = painel.filter(a => a.classificacao <= 2); // vermelho e laranja
   document.getElementById('totalGraves').textContent = graves.length;
-
-  if (painel.length === 0) {
-    document.getElementById('esperaMedia').textContent = 0;
-    return;
-  }
-
-  let soma = 0;
-  painel.forEach(a => {
-    soma += minutosDesde(a.data_hora_triagem);
-  });
-  document.getElementById('esperaMedia').textContent = Math.round(soma / painel.length);
 }
 
-// busca os triados no servidor e monta a tabela (já vem na ordem certa)
+// busca os triados no servidor e monta a tabela.
+// já vem na ordem certa: o servidor ordena por classificação e depois por chegada
 async function carregarPainel() {
   const resposta = await fetch('/painel');
   painel = await resposta.json();
   atualizarResumo();
 
+  // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('painel');
   tbody.innerHTML = '';
 
@@ -83,9 +69,11 @@ async function carregarPainel() {
     return;
   }
 
+  // uma linha por paciente
   painel.forEach((a, i) => {
     const tr = document.createElement('tr');
-    // etiqueta colorida com a classificação
+
+    // etiqueta colorida com a classificação (ex: classe prioridade-1 = vermelho)
     const span = document.createElement('span');
     span.className = 'etiqueta prioridade-' + a.classificacao;
     span.textContent = classificacoes[a.classificacao];
@@ -111,6 +99,8 @@ async function carregarMedicamentos() {
   const resposta = await fetch('/medicamentos');
   const lista = await resposta.json();
 
+  // cada remédio vira uma opção do select.
+  // o value é o id (vai pro banco) e o texto é o que o médico vê
   const select = document.getElementById('id_medicamento');
   lista.forEach(m => {
     const opcao = document.createElement('option');
@@ -144,9 +134,9 @@ async function carregarPrescricoes() {
   });
 }
 
-// médico chama o paciente: abre a parte da consulta
+// médico chama o paciente: abre a parte da consulta com os dados da triagem
 function chamar(i) {
-  atual = painel[i];
+  atual = painel[i]; // guarda quem está sendo atendido
   document.getElementById('consulta').hidden = false;
   document.getElementById('tituloConsulta').textContent =
     atual.numero_atendimento + ' - ' + atual.nome_completo + ' (' + atual.idade + ' anos)';
@@ -155,6 +145,7 @@ function chamar(i) {
   document.getElementById('sinalTemperatura').textContent = atual.temperatura + ' °C';
   document.getElementById('sinalBatimentos').textContent = atual.batimentos_cardiacos + ' bpm';
   document.getElementById('sinalQueixas').textContent = atual.queixas;
+  // limpa os formulários do paciente anterior
   document.getElementById('formPrescricao').reset();
   document.getElementById('formFinalizar').reset();
   mostrarMensagem('', '');
@@ -164,10 +155,10 @@ function chamar(i) {
 
 // adicionar medicação
 document.getElementById('formPrescricao').addEventListener('submit', async (evento) => {
-  evento.preventDefault();
+  evento.preventDefault(); // não deixa a página recarregar
 
   const prescricao = {
-    id_medicamento: document.getElementById('id_medicamento').value,
+    id_medicamento: document.getElementById('id_medicamento').value, // id do remédio escolhido
     dosagem: document.getElementById('dosagem').value.trim(),
     frequencia: document.getElementById('frequencia').value.trim()
   };
@@ -184,6 +175,7 @@ document.getElementById('formPrescricao').addEventListener('submit', async (even
     return;
   }
 
+  // limpa pra lançar o próximo e atualiza a lista de remédios do paciente
   document.getElementById('formPrescricao').reset();
   carregarPrescricoes();
 });
@@ -207,19 +199,20 @@ document.getElementById('formFinalizar').addEventListener('submit', async (event
     return;
   }
 
+  // deu certo: o status virou 'atendido', então recarregar o painel tira o paciente da lista
   document.getElementById('consulta').hidden = true;
   mostrarMensagem('Atendimento ' + atual.numero_atendimento + ' finalizado.', 'sucesso');
   atual = null;
   carregarPainel();
 });
 
-// botão Fechar
+// botão Fechar: esconde a consulta sem finalizar
 document.getElementById('fechar').addEventListener('click', () => {
   document.getElementById('consulta').hidden = true;
   atual = null;
 });
 
-// botão Atualizar e carga inicial
+// botão Atualizar, e já carrega tudo quando a tela abre
 document.getElementById('atualizar').addEventListener('click', carregarPainel);
 carregarPainel();
 carregarMedicamentos();
