@@ -4,7 +4,7 @@
 
 -- Apaga e recria o banco do zero (roda quantas vezes precisar)
 DROP DATABASE IF EXISTS pronto_socorro;
-CREATE DATABASE pronto_socorro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE pronto_socorro;
 USE pronto_socorro;
 
 -- Profissionais que usam o sistema (recepção, enfermagem, médico)
