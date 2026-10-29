@@ -199,7 +199,7 @@ main {
 
 .resumo {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -301,30 +301,62 @@ main {
   font-size: 20px;
 }
 
-/* ========== Regras antigas ==========
-   Ainda usadas pela recepção e pela triagem.
-   Apagar quando essas telas estiverem no layout novo. */
+/* ========== Tela de login ========== */
 
-input, select {
-  display: block;
-  width: 300px;
-  padding: 4px;
+.tela-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-button {
-  margin-top: 8px;
-  padding: 4px 12px;
+.tela-login .caixa {
+  width: 360px;
+  margin: 0;
 }
 
-table {
-  border-collapse: collapse;
-  margin-top: 10px;
+.tela-login h1 {
+  text-align: center;
+  margin-top: 0;
 }
 
-th, td {
-  border: 1px solid #999;
-  padding: 4px 8px;
+.tela-login .botao {
+  width: 100%;
+  padding: 12px;
 }
+
+/* ========== Status do atendimento ========== */
+
+.status-aberto     { background: #dbeafe; color: #1d4ed8; }
+.status-triado     { background: #fef9c3; color: #a16207; }
+.status-atendido   { background: #dcfce7; color: #15803d; }
+.status-cancelado  { background: #f3f4f6; color: #6b7280; }
+
+/* ========== Botões dentro da tabela ========== */
+
+.botoes {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.botoes .botao {
+  margin-left: 8px;
+}
+
+/* ========== Título do card com botão ao lado ========== */
+
+.cabecalho-caixa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cabecalho-caixa h2 {
+  margin: 0;
+}
+
+/* ========== Mensagens de erro e sucesso ========== */
 
 .erro, .sucesso {
   padding: 12px 16px;
@@ -342,6 +374,6 @@ th, td {
   color: #15803d;
 }
 
-.erro:empty, .sucesso:empty { 
+.erro:empty, .sucesso:empty {
   display: none;
 }

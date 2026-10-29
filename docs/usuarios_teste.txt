@@ -1,0 +1,54 @@
+﻿USUÁRIOS DE TESTE - PRONTO SOCORRO
+
+Endereço: http://localhost:3000
+Login: CPF (só números)
+Senha: primeiro nome + @ + 4 últimos dígitos do CPF
+
+============================================================
+RECEPÇÃO
+============================================================
+Nome                        CPF            Senha
+------------------------------------------------------------
+Ana Paula Ferreira          10736842705    Ana@2705
+Bruno Henrique Lima         11473685460    Bruno@5460
+Camila Rodrigues Souza      12210528100    Camila@8100
+Diego Martins Alves         12947370821    Diego@0821
+Fernanda Costa Ribeiro      13684213500    Fernanda@3500
+Gustavo Pereira Nunes       14421056235    Gustavo@6235
+Juliana Almeida Rocha       15157898967    Juliana@8967
+Lucas Oliveira Prado        15894741637    Lucas@1637
+Mariana Gomes Teixeira      16631584361    Mariana@4361
+Rafael Carvalho Dias        17368427060    Rafael@7060
+
+============================================================
+ENFERMAGEM (TRIAGEM)
+============================================================
+Nome                        CPF            Senha
+------------------------------------------------------------
+Beatriz Santos Moreira      18105269732    Beatriz@9732
+Carla Mendes Barbosa        18842112402    Carla@2402
+Daniela Freitas Lopes       19578955197    Daniela@5197
+Eduardo Ramos Cardoso       20315797894    Eduardo@7894
+Gabriela Araujo Pinto       21052640508    Gabriela@0508
+Helena Duarte Campos        21789483247    Helena@3247
+Igor Fernandes Vieira       22526325935    Igor@5935
+Larissa Monteiro Cruz       23263168606    Larissa@8606
+Patricia Azevedo Reis       24000011383    Patricia@1383
+Thiago Correia Batista      24736854014    Thiago@4014
+
+============================================================
+MÉDICOS
+============================================================
+Nome                        CPF            Senha
+------------------------------------------------------------
+Andre Luiz Cavalcanti       25473696724    Andre@6724
+Claudia Regina Fonseca      26210539475    Claudia@9475
+Felipe Augusto Machado      26947382149    Felipe@2149
+Isabela Torres Medeiros     27684224875    Isabela@4875
+Joao Pedro Sampaio          28421067508    Joao@7508
+Leticia Moura Andrade       29157910235    Leticia@0235
+Marcelo Antunes Brito       29894752900    Marcelo@2900
+Natalia Farias Coelho       30631595651    Natalia@5651
+Ricardo Bastos Siqueira     31368438350    Ricardo@8350
+Vanessa Lima Guimaraes      32105281010    Vanessa@1010
+

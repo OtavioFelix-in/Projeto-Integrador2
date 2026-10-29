@@ -1,155 +1,251 @@
-# Sistema de Atendimentos de Pronto Socorro
+# Sistema de Atendimento de Pronto Socorro
 
-Sistema para controle do fluxo de atendimento em um Pronto Socorro, da chegada do paciente na recepção até a confirmação da consulta médica. Projeto Integrador 2 — Sistemas de Informação, PUC-Campinas.
+Projeto Integrador 2 - Sistemas de Informação, PUC-Campinas.
 
-Roda local, no próprio computador, aberto pelo navegador em `http://localhost:3000`. Não é site publicado e não precisa de internet.
+Sistema para organizar o atendimento de um pronto socorro, desde a chegada do paciente na recepção até o atendimento médico. A recepção abre o atendimento, a enfermagem faz a triagem e classifica o risco pelo Protocolo de Manchester, e o médico atende os pacientes na ordem de prioridade.
 
-## O processo
-
-1. **Recepção** — cadastra o paciente e abre o atendimento, que recebe um número (ex: `AT0001`). Também consulta, altera e cancela.
-2. **Triagem (Enfermagem)** — registra os sinais vitais e classifica o risco conforme o Protocolo de Manchester.
-3. **Médico** — chama os pacientes por prioridade, lança as medicações e confirma a consulta com o diagnóstico.
-
-Cada tela exige login. O perfil do usuário (`recepcao`, `enfermagem` ou `medico`) define qual tela ele abre.
+O sistema roda no próprio computador e é aberto pelo navegador em `http://localhost:3000`.
 
 ## Tecnologias
 
-```
-MySQL  →  Node.js (Express)  →  JavaScript  →  HTML  →  CSS
-```
+- MySQL: banco de dados
+- Node.js com Express: servidor (rotas, regras de negócio e conexão com o banco)
+- JavaScript, HTML e CSS: telas
 
-| Camada | O que faz |
-|---|---|
-| MySQL | Guarda os dados (`create_table.sql`) |
-| Node.js + Express | `backend/server.js`: rotas, regras de negócio e conexão com o banco (pacote `mysql2`) |
-| JavaScript | Um arquivo por tela, chama o back com `fetch` e troca dados em JSON |
-| HTML + CSS | As 4 telas: login, recepção, triagem e médico |
+Bibliotecas do servidor: `express`, `mysql2` e `bcryptjs` (para guardar as senhas com hash).
 
-## Estrutura
+## Estrutura de pastas
 
 ```
-Projeto-Integrador2/
-  create_table.sql        cria o banco, as tabelas e os logins de teste
-  iniciar.bat             dois cliques: sobe o servidor e abre o navegador
+Projeto Integrador/
+  bd/
+    create_table.sql     cria o banco, as tabelas, os usuários de teste e os medicamentos
   backend/
-    server.js
+    server.js            servidor e todas as rotas
+    .env.example         modelo do arquivo de configuração do banco
     package.json
-    public/
-      login.html
-      recepcao.html
-      triagem.html
-      medico.html
-      css/style.css
-      js/login.js, recepcao.js, triagem.js, medico.js
+  frontend/
+    login.html, recepcao.html, triagem.html, medico.html
+    css/style.css
+    js/login.js, recepcao.js, triagem.js, medico.js
+  MER.md                 modelo do banco com mais detalhes
+  Documentação           documento do projeto
 ```
 
 ## Como rodar
 
-1. Instalar o [Node.js](https://nodejs.org) e o MySQL 8.
-2. Rodar o `create_table.sql` no MySQL. Ele cria o banco `pronto_socorro` e três logins de teste:
+1. Instalar o Node.js e o MySQL 8.
+2. Rodar o `bd/create_table.sql` no MySQL. Ele apaga e cria de novo o banco `pronto_socorro`.
+3. Na pasta `backend`, copiar o `.env.example` para um arquivo `.env` e colocar a senha do seu MySQL.
+4. Na pasta `backend`, rodar:
+   ```
+   npm install
+   node server.js
+   ```
+5. Abrir `http://localhost:3000` no navegador.
 
-   | Usuário | Senha | Tela |
-   |---|---|---|
-   | `recepcao` | `123` | Recepção |
-   | `enfermagem` | `123` | Triagem |
-   | `medico` | `123` | Médico |
+O arquivo `.env` não vai para o GitHub, porque tem a senha do banco.
 
-3. Se o MySQL não usar usuário `root` e senha `root`, ajustar no topo do `backend/server.js`.
-4. Dar dois cliques no `iniciar.bat`. Na primeira vez ele instala os pacotes (`npm install`).
+### Usuários de teste
 
-## Modelo de dados
+A equipe de teste tem 10 pessoas na recepção, 10 na enfermagem e 10 médicos. O login é feito com o CPF e a senha de cada um. No banco fica só o hash da senha.
 
-6 tabelas: `usuario`, `login`, `paciente`, `atendimento`, `triagem`, `prescricao`.
+| Perfil | Nome | CPF (login) | Senha |
+|---|---|---|---|
+| Recepção | Ana Paula Ferreira | 10736842705 | Ana@2705 |
+| Recepção | Bruno Henrique Lima | 11473685460 | Bruno@5460 |
+| Recepção | Camila Rodrigues Souza | 12210528100 | Camila@8100 |
+| Recepção | Diego Martins Alves | 12947370821 | Diego@0821 |
+| Recepção | Fernanda Costa Ribeiro | 13684213500 | Fernanda@3500 |
+| Recepção | Gustavo Pereira Nunes | 14421056235 | Gustavo@6235 |
+| Recepção | Juliana Almeida Rocha | 15157898967 | Juliana@8967 |
+| Recepção | Lucas Oliveira Prado | 15894741637 | Lucas@1637 |
+| Recepção | Mariana Gomes Teixeira | 16631584361 | Mariana@4361 |
+| Recepção | Rafael Carvalho Dias | 17368427060 | Rafael@7060 |
+| Enfermagem | Beatriz Santos Moreira | 18105269732 | Beatriz@9732 |
+| Enfermagem | Carla Mendes Barbosa | 18842112402 | Carla@2402 |
+| Enfermagem | Daniela Freitas Lopes | 19578955197 | Daniela@5197 |
+| Enfermagem | Eduardo Ramos Cardoso | 20315797894 | Eduardo@7894 |
+| Enfermagem | Gabriela Araujo Pinto | 21052640508 | Gabriela@0508 |
+| Enfermagem | Helena Duarte Campos | 21789483247 | Helena@3247 |
+| Enfermagem | Igor Fernandes Vieira | 22526325935 | Igor@5935 |
+| Enfermagem | Larissa Monteiro Cruz | 23263168606 | Larissa@8606 |
+| Enfermagem | Patricia Azevedo Reis | 24000011383 | Patricia@1383 |
+| Enfermagem | Thiago Correia Batista | 24736854014 | Thiago@4014 |
+| Médico | Andre Luiz Cavalcanti | 25473696724 | Andre@6724 |
+| Médico | Claudia Regina Fonseca | 26210539475 | Claudia@9475 |
+| Médico | Felipe Augusto Machado | 26947382149 | Felipe@2149 |
+| Médico | Isabela Torres Medeiros | 27684224875 | Isabela@4875 |
+| Médico | Joao Pedro Sampaio | 28421067508 | Joao@7508 |
+| Médico | Leticia Moura Andrade | 29157910235 | Leticia@0235 |
+| Médico | Marcelo Antunes Brito | 29894752900 | Marcelo@2900 |
+| Médico | Natalia Farias Coelho | 30631595651 | Natalia@5651 |
+| Médico | Ricardo Bastos Siqueira | 31368438350 | Ricardo@8350 |
+| Médico | Vanessa Lima Guimaraes | 32105281010 | Vanessa@1010 |
+
+## Processo do sistema
+
+Cada profissional entra com o próprio CPF e cai na tela do seu perfil. O paciente passa pelas três etapas, e o campo `status` do atendimento mostra em que ponto ele está.
+
+```mermaid
+flowchart TD
+    L[Login com CPF e senha] --> P{Perfil}
+    P -->|recepcao| R[Recepção]
+    P -->|enfermagem| T[Triagem]
+    P -->|medico| M[Médico]
+
+    R --> R1[Preenche os dados do paciente]
+    R1 --> R2{CPF ou RG informado?<br/>Menor de idade tem pai ou mãe?}
+    R2 -->|não| R3[Mostra o erro]
+    R2 -->|sim| R4[Cadastra o paciente ou reaproveita pelo CPF<br/>e abre o atendimento AT0001]
+    R4 --> S1([status: aberto])
+
+    S1 --> T1[Paciente aparece na fila da triagem]
+    T --> T1
+    T1 --> T2[Enfermagem registra pressão, temperatura,<br/>batimentos, queixas e classificação 1 a 5]
+    T2 --> S2([status: triado])
+
+    S2 --> M1[Paciente aparece no painel do médico<br/>ordenado por classificação e chegada]
+    M --> M1
+    M1 --> M2[Médico chama o paciente e vê a triagem]
+    M2 --> M3[Escolhe os medicamentos da lista,<br/>com dosagem e frequência]
+    M3 --> M4[Escreve o diagnóstico e finaliza]
+    M4 --> S3([status: atendido])
+
+    S1 -.->|recepção cancela| C([status: cancelado])
+    S2 -.->|recepção cancela| C
+```
+
+Resumo dos status:
+
+| Status | Quem muda | Significado |
+|---|---|---|
+| aberto | recepção | paciente esperando a triagem |
+| triado | enfermagem | paciente esperando o médico |
+| atendido | médico | atendimento finalizado, vira histórico |
+| cancelado | recepção | só pode cancelar antes de o médico atender |
+
+### Classificação de Manchester
+
+| Valor | Cor | Urgência |
+|---|---|---|
+| 1 | Vermelho | emergência |
+| 2 | Laranja | muito urgente |
+| 3 | Amarelo | urgente |
+| 4 | Verde | pouco urgente |
+| 5 | Azul | não urgente |
+
+## Modelo de dados (MER)
+
+São 6 tabelas: `usuario`, `paciente`, `atendimento`, `triagem`, `medicamento` e `prescricao`.
 
 ```mermaid
 erDiagram
-    USUARIO ||--|| LOGIN : acessa
-    PACIENTE ||--o{ ATENDIMENTO : procura
-    ATENDIMENTO ||--o| TRIAGEM : passa
-    ATENDIMENTO ||--o{ PRESCRICAO : recebe
-    USUARIO ||--o{ TRIAGEM : realiza
-    USUARIO ||--o{ ATENDIMENTO : confirma
+    PACIENTE ||--o{ ATENDIMENTO : "procura"
+    ATENDIMENTO ||--o| TRIAGEM : "passa"
+    ATENDIMENTO ||--o{ PRESCRICAO : "recebe"
+    MEDICAMENTO ||--o{ PRESCRICAO : "aparece em"
+    USUARIO ||--o{ ATENDIMENTO : "abre (recepcao)"
+    USUARIO ||--o{ TRIAGEM : "realiza (enfermagem)"
+    USUARIO |o--o{ ATENDIMENTO : "atende (medico)"
 
     USUARIO {
         int id_usuario PK
         varchar nome
-        char cpf UK
-        varchar perfil
-    }
-
-    LOGIN {
-        int id_login PK
-        int id_usuario FK
-        varchar usuario UK
-        varchar senha
+        char cpf UK "usado no login"
+        varchar telefone
+        varchar email "opcional"
+        varchar login UK
+        varchar senha_hash "bcrypt"
+        varchar perfil "recepcao, enfermagem ou medico"
+        boolean ativo
     }
 
     PACIENTE {
         int id_paciente PK
         varchar nome_completo
-        char cpf UK
+        char cpf UK "cpf ou rg obrigatorio"
         varchar rg UK
         date data_nascimento
         char sexo
         varchar telefone
+        varchar endereco
         varchar nome_pai
         varchar nome_mae
-        varchar endereco
     }
 
     ATENDIMENTO {
-        int id_atendimento PK
+        int id_atendimento PK "numero AT0001"
         int id_paciente FK
+        varchar status "aberto, triado, atendido ou cancelado"
+        int id_recepcionista FK
         datetime data_hora_entrada
-        varchar status
         int id_medico FK
-        datetime data_hora_confirmacao
+        datetime data_hora_atendimento
         varchar diagnostico
     }
 
     TRIAGEM {
         int id_triagem PK
-        int id_atendimento FK
+        int id_atendimento FK, UK "uma por atendimento"
         int id_enfermeiro FK
         datetime data_hora
         varchar pressao_arterial
         decimal temperatura
         int batimentos_cardiacos
         varchar queixas
-        tinyint prioridade
+        tinyint classificacao "Manchester 1 a 5"
+    }
+
+    MEDICAMENTO {
+        int id_medicamento PK
+        varchar nome
+        varchar apresentacao
+        boolean ativo
     }
 
     PRESCRICAO {
         int id_prescricao PK
         int id_atendimento FK
-        varchar medicamento
+        int id_medicamento FK
         varchar dosagem
         varchar frequencia
     }
 ```
 
-### Notas do modelo
+Observações sobre o modelo:
 
-- `usuario` guarda o profissional; `login` guarda usuário e senha, um login por usuário.
-- `paciente` exige pelo menos um documento: `cpf` ou `rg` (CHECK). Menor de 18 anos precisa de `nome_pai` ou `nome_mae`, validado no back-end.
-- `atendimento.status` controla o fluxo: `aberto` → `triado` → `confirmado` (ou `cancelado`).
-- O número `AT0001` não é gravado no banco: o back-end monta a partir do `id_atendimento`.
-- `triagem` é 1:1 com `atendimento` (`id_atendimento` é `UNIQUE`).
-- `prioridade` guarda Manchester como número: 1 vermelho, 2 laranja, 3 amarelo, 4 verde, 5 azul. Assim o painel do médico ordena direto no SQL.
-- `prescricao` é 1:N, um atendimento pode ter várias medicações.
+- Um paciente pode ter vários atendimentos, um para cada vez que vai ao pronto socorro.
+- Cada atendimento tem no máximo uma triagem.
+- A `prescricao` liga o atendimento ao catálogo de `medicamento`, com a dosagem e a frequência daquele paciente.
+- O histórico não é uma tabela separada: são os atendimentos com status `atendido`.
+- A senha do usuário é guardada só como hash bcrypt.
+- O número `AT0001` não é gravado no banco: o servidor monta a partir do `id_atendimento`.
 
-## Rotas do back-end
+## Rotas do servidor
 
 | Método | Rota | Tela | O que faz |
 |---|---|---|---|
-| POST | `/login` | Login | Confere usuário e senha |
-| POST | `/atendimentos` | Recepção | Cadastra paciente (ou reaproveita pelo CPF) e abre atendimento |
-| GET | `/atendimentos?busca=` | Recepção | Busca por número ou CPF |
-| PUT | `/atendimentos/:id` | Recepção | Altera os dados do paciente |
-| PATCH | `/atendimentos/:id/cancelar` | Recepção | Cancela, se ainda não foi confirmado |
-| GET | `/triagem/fila` | Triagem | Lista atendimentos abertos |
-| POST | `/atendimentos/:id/triagem` | Triagem | Grava sinais vitais e prioridade |
-| GET | `/painel` | Médico | Lista triados por prioridade e hora da triagem |
-| GET | `/atendimentos/:id/prescricoes` | Médico | Lista as medicações lançadas |
-| POST | `/atendimentos/:id/prescricoes` | Médico | Lança medicação |
-| PATCH | `/atendimentos/:id/confirmar` | Médico | Confirma a consulta com o diagnóstico |
+| POST | /login | Login | confere CPF e senha |
+| POST | /usuarios | - | cadastra um profissional |
+| POST | /atendimentos | Recepção | cadastra o paciente e abre o atendimento |
+| GET | /atendimentos?busca= | Recepção | busca por número ou CPF |
+| PUT | /atendimentos/:id | Recepção | altera os dados do paciente |
+| PATCH | /atendimentos/:id/cancelar | Recepção | cancela o atendimento |
+| GET | /triagem/fila | Triagem | lista os atendimentos abertos |
+| POST | /atendimentos/:id/triagem | Triagem | grava a triagem |
+| GET | /painel | Médico | lista os triados por prioridade |
+| GET | /medicamentos | Médico | lista os medicamentos |
+| GET | /atendimentos/:id/prescricoes | Médico | lista os medicamentos já passados |
+| POST | /atendimentos/:id/prescricoes | Médico | passa um medicamento |
+| PATCH | /atendimentos/:id/finalizar | Médico | grava o diagnóstico e finaliza |
+
+## Regras de negócio
+
+- O paciente precisa ter CPF ou RG.
+- Paciente menor de 18 anos precisa ter o nome do pai ou da mãe.
+- Se o CPF já está cadastrado, o paciente é reaproveitado e só um atendimento novo é aberto.
+- A triagem só pode ser feita em atendimento aberto.
+- O médico só prescreve e finaliza atendimento triado.
+- Atendimento atendido não pode ser alterado nem cancelado.
+- Só usuário ativo consegue entrar no sistema.
