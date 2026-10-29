@@ -89,6 +89,14 @@ function celula(tr, texto) {
   return td;
 }
 
+// coloca uma etiqueta colorida dentro da célula (cores no style.css)
+function etiqueta(td, texto, classe) {
+  const span = document.createElement('span');
+  span.className = 'etiqueta ' + classe;
+  span.textContent = texto;
+  td.appendChild(span);
+}
+
 // busca por número (AT0001) ou CPF e monta a tabela
 async function buscar() {
   const busca = campo('busca');
@@ -114,17 +122,20 @@ async function buscar() {
     celula(tr, a.numero_atendimento);
     celula(tr, a.nome_completo);
     celula(tr, a.data_hora_entrada);
-    celula(tr, a.status);
+    etiqueta(celula(tr, ''), a.status, 'status-' + a.status);
     const acoes = celula(tr, '');
+    acoes.className = 'botoes';
 
     // só dá pra mexer enquanto o médico não atendeu
     if (a.status !== 'atendido' && a.status !== 'cancelado') {
       const alterar = document.createElement('button');
+      alterar.className = 'botao';
       alterar.textContent = 'Alterar';
       alterar.addEventListener('click', () => editar(i));
       acoes.appendChild(alterar);
 
       const cancelar = document.createElement('button');
+      cancelar.className = 'botao botao-secundario';
       cancelar.textContent = 'Cancelar';
       cancelar.addEventListener('click', () => cancelarAtendimento(a.id_atendimento));
       acoes.appendChild(cancelar);

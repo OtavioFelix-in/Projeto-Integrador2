@@ -339,7 +339,8 @@ app.get('/painel', async (req, res) => {
     const [linhas] = await banco.query(
       `SELECT a.id_atendimento, a.data_hora_entrada,
               p.nome_completo, p.data_nascimento, p.sexo,
-              t.pressao_arterial, t.temperatura, t.batimentos_cardiacos, t.queixas, t.classificacao
+              t.pressao_arterial, t.temperatura, t.batimentos_cardiacos, t.queixas, t.classificacao,
+              t.data_hora AS data_hora_triagem
          FROM atendimento a
          JOIN paciente p ON p.id_paciente = a.id_paciente
          JOIN triagem t ON t.id_atendimento = a.id_atendimento

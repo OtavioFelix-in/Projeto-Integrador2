@@ -56,6 +56,7 @@ async function carregarFila() {
     celula(tr, a.data_hora_entrada);
 
     const botao = document.createElement('button');
+    botao.className = 'botao';
     botao.textContent = 'Fazer triagem';
     botao.addEventListener('click', () => abrirTriagem(i));
     celula(tr, '').appendChild(botao);

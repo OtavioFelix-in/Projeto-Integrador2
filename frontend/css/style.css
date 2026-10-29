@@ -1,6 +1,25 @@
+/* ========== Variáveis e base ========== */
+
+:root {
+  --azul: #1e5bd8;
+  --azul-escuro: #0f1e3d;
+  --fundo: #f3f5f9;
+  --branco: #ffffff;
+  --texto: #1f2937;
+  --texto-suave: #6b7280;
+  --raio: 12px;
+  --sombra: 0 2px 8px rgba(15, 30, 61, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  margin: 20px;
+  background: var(--fundo);
+  color: var(--texto);
 }
 
 label {
@@ -8,31 +27,353 @@ label {
   margin-bottom: 8px;
 }
 
-input, select {
+/* ========== Layout (sidebar + conteúdo) ========== */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--azul-escuro);
+  color: var(--branco);
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 16px;
+}
+
+.sidebar nav {
+  flex: 1;
+  margin-top: 32px;
+}
+
+.sidebar a {
   display: block;
-  width: 300px;
-  padding: 4px;
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 4px;
 }
 
-button {
-  margin-top: 8px;
-  padding: 4px 12px;
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--branco);
 }
 
-table {
+.sidebar a.ativo {
+  background: var(--azul);
+  color: var(--branco);
+}
+
+.conteudo {
+  flex: 1;
+}
+
+.topo {
+  background: var(--branco);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--sombra);
+}
+
+.topo h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+main {
+  padding: 24px 32px;
+}
+
+.caixa {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+/* ========== Botões ========== */
+
+.botao {
+  background: var(--azul);
+  color: var(--branco);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.botao:hover {
+  background: #164bb5;
+}
+
+.botao-secundario {
+  background: var(--branco);
+  color: var(--azul);
+  border: 1px solid var(--azul);
+}
+
+.botao-secundario:hover {
+  background: #eef3fd;
+}
+
+.botao-sair {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  text-align: left;
+  padding: 12px 16px;
+  margin: 0;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.botao-sair:hover {
+  color: var(--branco);
+}
+
+/* ========== Tabela e etiquetas ========== */
+
+.tabela {
+  width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
 }
 
-th, td {
-  border: 1px solid #999;
-  padding: 4px 8px;
+.tabela th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  background: #f8fafc;
+  padding: 12px 16px;
+  border: none;
+}
+
+.tabela td {
+  padding: 14px 16px;
+  border: none;
+  border-top: 1px solid #eef1f5;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.etiqueta::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.prioridade-1 { background: #fde8e8; color: #c81e1e; }
+.prioridade-2 { background: #feecdc; color: #c2410c; }
+.prioridade-3 { background: #fef9c3; color: #a16207; }
+.prioridade-4 { background: #dcfce7; color: #15803d; }
+.prioridade-5 { background: #dbeafe; color: #1d4ed8; }
+
+/* ========== Cards de resumo ========== */
+
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-titulo {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.card strong {
+  font-size: 32px;
+}
+
+.card-legenda {
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+/* ========== Formulários ========== */
+
+.caixa h2 {
+  margin-top: 0;
+}
+
+.caixa h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  margin: 24px 0 8px;
+}
+
+.caixa label {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--texto-suave);
+}
+
+.caixa input, .caixa select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--texto);
+}
+
+.caixa input:focus, .caixa select:focus {
+  outline: none;
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(30, 91, 216, 0.15);
+}
+
+.form-linha {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.form-linha label {
+  flex: 1;
+  margin: 0;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ========== Sinais vitais ========== */
+
+.sinais {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.sinal {
+  background: var(--fundo);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sinal strong {
+  font-size: 20px;
+}
+
+/* ========== Tela de login ========== */
+
+.tela-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.tela-login .caixa {
+  width: 360px;
+  margin: 0;
+}
+
+.tela-login h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.tela-login .botao {
+  width: 100%;
+  padding: 12px;
+}
+
+/* ========== Status do atendimento ========== */
+
+.status-aberto     { background: #dbeafe; color: #1d4ed8; }
+.status-triado     { background: #fef9c3; color: #a16207; }
+.status-atendido   { background: #dcfce7; color: #15803d; }
+.status-cancelado  { background: #f3f4f6; color: #6b7280; }
+
+/* ========== Botões dentro da tabela ========== */
+
+.botoes {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.botoes .botao {
+  margin-left: 8px;
+}
+
+/* ========== Título do card com botão ao lado ========== */
+
+.cabecalho-caixa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cabecalho-caixa h2 {
+  margin: 0;
+}
+
+/* ========== Mensagens de erro e sucesso ========== */
+
+.erro, .sucesso {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: bold;
 }
 
 .erro {
-  color: red;
+  background: #fde8e8;
+  color: #c81e1e;
 }
 
 .sucesso {
-  color: green;
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.erro:empty, .sucesso:empty {
+  display: none;
 }

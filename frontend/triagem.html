@@ -1,61 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Pronto Socorro - Triagem</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <h1>Triagem</h1>
-  <p><span id="nomeUsuario"></span> <button id="sair">Sair</button></p>
+  <div class="layout">
 
-  <h2>Pacientes aguardando triagem</h2>
-  <button id="atualizar">Atualizar</button>
-  <table>
-    <thead>
-      <tr>
-        <th>Número</th>
-        <th>Paciente</th>
-        <th>Idade</th>
-        <th>Entrada</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="fila"></tbody>
-  </table>
+    <aside class="sidebar">
+      <div class="logo">PRONTO<br>SOCORRO</div>
+      <nav>
+        <a href="triagem.html" class="ativo">Triagem</a>
+      </nav>
+      <button id="sair" class="botao-sair">Sair</button>
+    </aside>
 
-  <form id="formTriagem" hidden>
-    <h2 id="tituloTriagem"></h2>
-    <input type="hidden" id="idAtendimento">
+    <div class="conteudo">
+      <header class="topo">
+        <h1>Triagem</h1>
+        <span id="nomeUsuario"></span>
+      </header>
 
-    <label>Pressão arterial (ex: 120/80)
-      <input type="text" id="pressao_arterial" required>
-    </label>
-    <label>Temperatura (°C)
-      <input type="number" id="temperatura" step="0.1" min="30" max="45" required>
-    </label>
-    <label>Batimentos cardíacos (bpm)
-      <input type="number" id="batimentos_cardiacos" min="0" max="300" required>
-    </label>
-    <label>Principais queixas
-      <input type="text" id="queixas" maxlength="255" required>
-    </label>
-    <label>Classificação de risco (Manchester)
-      <select id="classificacao" required>
-        <option value="">Selecione</option>
-        <option value="1">Vermelho - Emergência</option>
-        <option value="2">Laranja - Muito urgente</option>
-        <option value="3">Amarelo - Urgente</option>
-        <option value="4">Verde - Pouco urgente</option>
-        <option value="5">Azul - Não urgente</option>
-      </select>
-    </label>
+      <main>
 
-    <button type="submit">Salvar triagem</button>
-    <button type="button" id="fechar">Fechar</button>
-  </form>
-  <p id="mensagem"></p>
+        <section class="caixa">
+          <div class="cabecalho-caixa">
+            <h2>Pacientes aguardando triagem</h2>
+            <button id="atualizar" class="botao botao-secundario">Atualizar</button>
+          </div>
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Paciente</th>
+                <th>Idade</th>
+                <th>Entrada</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="fila"></tbody>
+          </table>
+        </section>
+
+
+        <form id="formTriagem" class="caixa" hidden>
+          <h2 id="tituloTriagem"></h2>
+          <input type="hidden" id="idAtendimento">
+
+          <h3>Sinais vitais</h3>
+          <div class="form-linha">
+            <label>Pressão arterial (ex: 120/80)
+              <input type="text" id="pressao_arterial" required>
+            </label>
+            <label>Temperatura (°C)
+              <input type="number" id="temperatura" step="0.1" min="30" max="45" required>
+            </label>
+            <label>Batimentos cardíacos (bpm)
+              <input type="number" id="batimentos_cardiacos" min="0" max="300" required>
+            </label>
+          </div>
+
+          <h3>Avaliação</h3>
+          <div class="form-linha">
+            <label>Principais queixas
+              <input type="text" id="queixas" maxlength="255" required>
+            </label>
+            <label>Classificação de risco (Manchester)
+              <select id="classificacao" required>
+                <option value="">Selecione</option>
+                <option value="1">Vermelho - Emergência</option>
+                <option value="2">Laranja - Muito urgente</option>
+                <option value="3">Amarelo - Urgente</option>
+                <option value="4">Verde - Pouco urgente</option>
+                <option value="5">Azul - Não urgente</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="acoes">
+            <button type="button" id="fechar" class="botao botao-secundario">Fechar</button>
+            <button type="submit" class="botao">Salvar triagem</button>
+          </div>
+        </form>
+
+        <p id="mensagem"></p>
+      </main>
+    </div>
+  </div>
 
   <script src="js/triagem.js"></script>
 </body>
+
 </html>

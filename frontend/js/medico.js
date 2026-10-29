@@ -15,13 +15,13 @@ document.getElementById('sair').addEventListener('click', () => {
   window.location.href = 'login.html';
 });
 
-// classificação de Manchester: número -> cor
-const cores = {
-  1: 'Vermelho',
-  2: 'Laranja',
-  3: 'Amarelo',
-  4: 'Verde',
-  5: 'Azul'
+// classificação de Manchester: número -> nome (a cor vem do style.css, classe prioridade-N)
+const classificacoes = {
+  1: 'Emergência',
+  2: 'Muito urgente',
+  3: 'Urgente',
+  4: 'Pouco urgente',
+  5: 'Não urgente'
 };
 
 let painel = [];   // pacientes esperando
@@ -42,10 +42,36 @@ function celula(tr, texto) {
   return td;
 }
 
+// minutos que passaram desde uma data do banco ('2026-10-28 14:30:00')
+function minutosDesde(dataHora) {
+  const inicio = new Date(dataHora.replace(' ', 'T'));
+  return Math.floor((Date.now() - inicio) / 60000);
+}
+
+// cartões do topo: quantos esperam, quantos graves e espera média
+function atualizarResumo() {
+  document.getElementById('totalAguardando').textContent = painel.length;
+
+  const graves = painel.filter(a => a.classificacao <= 2); // vermelho e laranja
+  document.getElementById('totalGraves').textContent = graves.length;
+
+  if (painel.length === 0) {
+    document.getElementById('esperaMedia').textContent = 0;
+    return;
+  }
+
+  let soma = 0;
+  painel.forEach(a => {
+    soma += minutosDesde(a.data_hora_triagem);
+  });
+  document.getElementById('esperaMedia').textContent = Math.round(soma / painel.length);
+}
+
 // busca os triados no servidor e monta a tabela (já vem na ordem certa)
 async function carregarPainel() {
   const resposta = await fetch('/painel');
   painel = await resposta.json();
+  atualizarResumo();
 
   const tbody = document.getElementById('painel');
   tbody.innerHTML = '';
@@ -59,13 +85,19 @@ async function carregarPainel() {
 
   painel.forEach((a, i) => {
     const tr = document.createElement('tr');
-    celula(tr, cores[a.classificacao]);
+    // etiqueta colorida com a classificação
+    const span = document.createElement('span');
+    span.className = 'etiqueta prioridade-' + a.classificacao;
+    span.textContent = classificacoes[a.classificacao];
+    celula(tr, '').appendChild(span);
+
     celula(tr, a.numero_atendimento);
     celula(tr, a.nome_completo);
     celula(tr, a.idade);
     celula(tr, a.queixas);
 
     const botao = document.createElement('button');
+    botao.className = 'botao';
     botao.textContent = 'Chamar';
     botao.addEventListener('click', () => chamar(i));
     celula(tr, '').appendChild(botao);
@@ -118,16 +150,16 @@ function chamar(i) {
   document.getElementById('consulta').hidden = false;
   document.getElementById('tituloConsulta').textContent =
     atual.numero_atendimento + ' - ' + atual.nome_completo + ' (' + atual.idade + ' anos)';
-  document.getElementById('dadosTriagem').textContent =
-    'Classificação: ' + cores[atual.classificacao] +
-    ' | Pressão: ' + atual.pressao_arterial +
-    ' | Temperatura: ' + atual.temperatura + ' °C' +
-    ' | Batimentos: ' + atual.batimentos_cardiacos + ' bpm' +
-    ' | Queixas: ' + atual.queixas;
+  // sinais vitais nos cartões
+  document.getElementById('sinalPressao').textContent = atual.pressao_arterial;
+  document.getElementById('sinalTemperatura').textContent = atual.temperatura + ' °C';
+  document.getElementById('sinalBatimentos').textContent = atual.batimentos_cardiacos + ' bpm';
+  document.getElementById('sinalQueixas').textContent = atual.queixas;
   document.getElementById('formPrescricao').reset();
   document.getElementById('formFinalizar').reset();
   mostrarMensagem('', '');
   carregarPrescricoes();
+  document.getElementById('consulta').scrollIntoView({ behavior: 'smooth' }); // rola até a consulta
 }
 
 // adicionar medicação
