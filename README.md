@@ -48,7 +48,7 @@ O arquivo `.env` não vai para o GitHub, porque tem a senha do banco.
 
 ### Usuários de teste
 
-A equipe de teste tem 10 pessoas na recepção, 10 na enfermagem e 10 médicos. O login é feito com o CPF e a senha de cada um. No banco fica só o hash da senha.
+São 45 profissionais fictícios: a equipe (10 na recepção, 10 na enfermagem e 10 médicos) e mais 15 jogadores do Flamengo (5 em cada perfil). O login é feito com o CPF e a senha de cada um. No banco fica só o hash da senha.
 
 | Perfil | Nome | CPF (login) | Senha |
 |---|---|---|---|
@@ -82,6 +82,21 @@ A equipe de teste tem 10 pessoas na recepção, 10 na enfermagem e 10 médicos. 
 | Médico | Natalia Farias Coelho | 30631595651 | Natalia@5651 |
 | Médico | Ricardo Bastos Siqueira | 31368438350 | Ricardo@8350 |
 | Médico | Vanessa Lima Guimaraes | 32105281010 | Vanessa@1010 |
+| Recepção | Leandro | 43141592608 | Leandro@2608 |
+| Recepção | Andrade | 46283185223 | Andrade@5223 |
+| Recepção | Adílio | 49424777868 | Adilio@7868 |
+| Recepção | Gerson | 52566370451 | Gerson@0451 |
+| Recepção | Everton Ribeiro | 55707963049 | Everton@3049 |
+| Enfermagem | Júnior | 58849555610 | Junior@5610 |
+| Enfermagem | Petkovic | 61991148259 | Petkovic@8259 |
+| Enfermagem | Filipe Luís | 65132740871 | Filipe@0871 |
+| Enfermagem | Bruno Henrique | 68274333403 | Bruno@3403 |
+| Enfermagem | Pedro | 71415926018 | Pedro@6018 |
+| Médico | Zico | 74557518699 | Zico@8699 |
+| Médico | Romário | 77699111257 | Romario@1257 |
+| Médico | Adriano | 80840703805 | Adriano@3805 |
+| Médico | Arrascaeta | 83982296404 | Arrascaeta@6404 |
+| Médico | Gabigol | 87123889045 | Gabigol@9045 |
 
 ## Processo do sistema
 

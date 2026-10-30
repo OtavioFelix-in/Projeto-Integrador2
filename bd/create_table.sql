@@ -127,6 +127,24 @@ INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil) VALU
     ('Ricardo Bastos Siqueira', '31368438350', '19995802444', 'ricardo.siqueira@prontosocorro.exemplo.com', '31368438350', '$2b$10$XnPKWk0J/XTL.l752obgMu2/ESTlNsVK35ttp2PVZtCiXlG/G/8MG', 'medico'),
     ('Vanessa Lima Guimaraes', '32105281010', '19997037011', 'vanessa.guimaraes@prontosocorro.exemplo.com', '32105281010', '$2b$10$YbuzlMmT780ATL4nqQut2..kIkcn.eMhxjQgC4fYAvcOH4VXJDmU.', 'medico');
 
+-- Elenco do Flamengo: 5 recepção, 5 enfermagem, 5 médicos. Login = CPF
+INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil) VALUES
+    ('Leandro', '43141592608', '21972718281', 'leandro@prontosocorro.exemplo.com', '43141592608', '$2b$10$GKJcAS7W0fE0fqC7yFlCzOV8mXx8kw0HJpuzThJUKNLO/FeBMdwyG', 'recepcao'),
+    ('Andrade', '46283185223', '21975436562', 'andrade@prontosocorro.exemplo.com', '46283185223', '$2b$10$sYjbqdEKXD2dqathpyfbaOgHfArzrZQIKxyrZH9i3xeK1NkIIWqky', 'recepcao'),
+    ('Adílio', '49424777868', '21978154843', 'adilio@prontosocorro.exemplo.com', '49424777868', '$2b$10$LBtRLgL/d3dpmYDl9QW3I.L6BHX/yWulXZXFtTkMyLLhGoxd9hPlG', 'recepcao'),
+    ('Gerson', '52566370451', '21980873124', 'gerson@prontosocorro.exemplo.com', '52566370451', '$2b$10$n1S5LMm5QZRlboXRUrSLh.Zfj3kCaEnQDWAMv2EWcM.rmz5X32f/e', 'recepcao'),
+    ('Everton Ribeiro', '55707963049', '21983591405', 'everton.ribeiro@prontosocorro.exemplo.com', '55707963049', '$2b$10$sQC41/lYSMhJ1PwAgBLxV.JrCAJHRanNo6NnOW3M8ME1kyBEwsPMO', 'recepcao'),
+    ('Júnior', '58849555610', '21986309686', 'junior@prontosocorro.exemplo.com', '58849555610', '$2b$10$qgBKlQmyCD.U6G0ylR40b.trgoNJytZh7l5rEiCO1JMNhiifdBZwe', 'enfermagem'),
+    ('Petkovic', '61991148259', '21989027967', 'petkovic@prontosocorro.exemplo.com', '61991148259', '$2b$10$.Kc/Q0N3u0rK6SPNuAXrJul7fhjqUczkYjIdUpazYQ4RyEXwMXEgS', 'enfermagem'),
+    ('Filipe Luís', '65132740871', '21991746248', 'filipe.luis@prontosocorro.exemplo.com', '65132740871', '$2b$10$msqR57ao9J24D.sqo0Do1u5lhAVOs4xQqVPIrvVsX8zon/jkJoHQO', 'enfermagem'),
+    ('Bruno Henrique', '68274333403', '21994464529', 'bruno.henrique@prontosocorro.exemplo.com', '68274333403', '$2b$10$jIXmNHcSy5LAPEnR9g70W.qrfI5ibWuoanW0N.HHRKaWtjix53BoK', 'enfermagem'),
+    ('Pedro', '71415926018', '21997182810', 'pedro@prontosocorro.exemplo.com', '71415926018', '$2b$10$Cy2hdQHp7rkDIwR2apUg/.eII4Z1zN6e1EzwJ02a.KfNEj463.oBC', 'enfermagem'),
+    ('Zico', '74557518699', '21999901091', 'zico@prontosocorro.exemplo.com', '74557518699', '$2b$10$yOrGl2ta33mN3lyNWMjzGu2XWvTKgOxD/ShmONWMB3HYpoxdIx8Zq', 'medico'),
+    ('Romário', '77699111257', '21972619373', 'romario@prontosocorro.exemplo.com', '77699111257', '$2b$10$lcMwYpTYhzakZUjaOkMeweM8UkqFbkaRUYkIl1CrhL9B/tMk1YXRi', 'medico'),
+    ('Adriano', '80840703805', '21975337654', 'adriano@prontosocorro.exemplo.com', '80840703805', '$2b$10$gAkF..vs4YaOsNzwNixu4.nlG6uqUOWvsIU38utBWPy9GwHOfZxo2', 'medico'),
+    ('Arrascaeta', '83982296404', '21978055935', 'arrascaeta@prontosocorro.exemplo.com', '83982296404', '$2b$10$DxL1xI9sHuguMkG58uLtlOKARr4D95lzpawWdYYmQGz6zu.fa3NKC', 'medico'),
+    ('Gabigol', '87123889045', '21980774216', 'gabigol@prontosocorro.exemplo.com', '87123889045', '$2b$10$n9m2obB5Y8VrErSI3LRmyOIE7/nkM7TjI3bA4s/BF4N0ZKSOh6xBe', 'medico');
+
 -- Lista inicial de medicamentos comuns de pronto socorro
 INSERT INTO medicamento (nome, apresentacao) VALUES
     ('Dipirona',             '500 mg comprimido'),
