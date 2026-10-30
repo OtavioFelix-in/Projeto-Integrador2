@@ -48,40 +48,10 @@ O arquivo `.env` não vai para o GitHub, porque tem a senha do banco.
 
 ### Usuários de teste
 
-São 45 profissionais fictícios: a equipe (10 na recepção, 10 na enfermagem e 10 médicos) e mais 15 jogadores do Flamengo (5 em cada perfil). O login é feito com o CPF e a senha de cada um. No banco fica só o hash da senha.
+Para testar, use um dos jogadores do Flamengo abaixo (5 em cada perfil). O login é feito com o CPF e a senha de cada um, e no banco fica só o hash da senha. A lista completa, com a equipe de 30 profissionais, está em `docs/usuarios_teste.txt`.
 
 | Perfil | Nome | CPF (login) | Senha |
 |---|---|---|---|
-| Recepção | Ana Paula Ferreira | 10736842705 | Ana@2705 |
-| Recepção | Bruno Henrique Lima | 11473685460 | Bruno@5460 |
-| Recepção | Camila Rodrigues Souza | 12210528100 | Camila@8100 |
-| Recepção | Diego Martins Alves | 12947370821 | Diego@0821 |
-| Recepção | Fernanda Costa Ribeiro | 13684213500 | Fernanda@3500 |
-| Recepção | Gustavo Pereira Nunes | 14421056235 | Gustavo@6235 |
-| Recepção | Juliana Almeida Rocha | 15157898967 | Juliana@8967 |
-| Recepção | Lucas Oliveira Prado | 15894741637 | Lucas@1637 |
-| Recepção | Mariana Gomes Teixeira | 16631584361 | Mariana@4361 |
-| Recepção | Rafael Carvalho Dias | 17368427060 | Rafael@7060 |
-| Enfermagem | Beatriz Santos Moreira | 18105269732 | Beatriz@9732 |
-| Enfermagem | Carla Mendes Barbosa | 18842112402 | Carla@2402 |
-| Enfermagem | Daniela Freitas Lopes | 19578955197 | Daniela@5197 |
-| Enfermagem | Eduardo Ramos Cardoso | 20315797894 | Eduardo@7894 |
-| Enfermagem | Gabriela Araujo Pinto | 21052640508 | Gabriela@0508 |
-| Enfermagem | Helena Duarte Campos | 21789483247 | Helena@3247 |
-| Enfermagem | Igor Fernandes Vieira | 22526325935 | Igor@5935 |
-| Enfermagem | Larissa Monteiro Cruz | 23263168606 | Larissa@8606 |
-| Enfermagem | Patricia Azevedo Reis | 24000011383 | Patricia@1383 |
-| Enfermagem | Thiago Correia Batista | 24736854014 | Thiago@4014 |
-| Médico | Andre Luiz Cavalcanti | 25473696724 | Andre@6724 |
-| Médico | Claudia Regina Fonseca | 26210539475 | Claudia@9475 |
-| Médico | Felipe Augusto Machado | 26947382149 | Felipe@2149 |
-| Médico | Isabela Torres Medeiros | 27684224875 | Isabela@4875 |
-| Médico | Joao Pedro Sampaio | 28421067508 | Joao@7508 |
-| Médico | Leticia Moura Andrade | 29157910235 | Leticia@0235 |
-| Médico | Marcelo Antunes Brito | 29894752900 | Marcelo@2900 |
-| Médico | Natalia Farias Coelho | 30631595651 | Natalia@5651 |
-| Médico | Ricardo Bastos Siqueira | 31368438350 | Ricardo@8350 |
-| Médico | Vanessa Lima Guimaraes | 32105281010 | Vanessa@1010 |
 | Recepção | Leandro | 43141592608 | Leandro@2608 |
 | Recepção | Andrade | 46283185223 | Andrade@5223 |
 | Recepção | Adílio | 49424777868 | Adilio@7868 |
