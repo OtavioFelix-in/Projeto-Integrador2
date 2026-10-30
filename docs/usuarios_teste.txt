@@ -7,6 +7,7 @@ Senha: primeiro nome + @ + 4 últimos dígitos do CPF
 ============================================================
 RECEPÇÃO
 ============================================================
+Equipe:
 Nome                        CPF            Senha
 ------------------------------------------------------------
 Ana Paula Ferreira          10736842705    Ana@2705
@@ -20,9 +21,19 @@ Lucas Oliveira Prado        15894741637    Lucas@1637
 Mariana Gomes Teixeira      16631584361    Mariana@4361
 Rafael Carvalho Dias        17368427060    Rafael@7060
 
+Elenco do Flamengo:
+Nome                        CPF            Senha
+------------------------------------------------------------
+Leandro                     43141592608    Leandro@2608
+Andrade                     46283185223    Andrade@5223
+Adílio                      49424777868    Adilio@7868
+Gerson                      52566370451    Gerson@0451
+Everton Ribeiro             55707963049    Everton@3049
+
 ============================================================
 ENFERMAGEM (TRIAGEM)
 ============================================================
+Equipe:
 Nome                        CPF            Senha
 ------------------------------------------------------------
 Beatriz Santos Moreira      18105269732    Beatriz@9732
@@ -36,9 +47,19 @@ Larissa Monteiro Cruz       23263168606    Larissa@8606
 Patricia Azevedo Reis       24000011383    Patricia@1383
 Thiago Correia Batista      24736854014    Thiago@4014
 
+Elenco do Flamengo:
+Nome                        CPF            Senha
+------------------------------------------------------------
+Júnior                      58849555610    Junior@5610
+Petkovic                    61991148259    Petkovic@8259
+Filipe Luís                 65132740871    Filipe@0871
+Bruno Henrique              68274333403    Bruno@3403
+Pedro                       71415926018    Pedro@6018
+
 ============================================================
 MÉDICOS
 ============================================================
+Equipe:
 Nome                        CPF            Senha
 ------------------------------------------------------------
 Andre Luiz Cavalcanti       25473696724    Andre@6724
@@ -51,4 +72,13 @@ Marcelo Antunes Brito       29894752900    Marcelo@2900
 Natalia Farias Coelho       30631595651    Natalia@5651
 Ricardo Bastos Siqueira     31368438350    Ricardo@8350
 Vanessa Lima Guimaraes      32105281010    Vanessa@1010
+
+Elenco do Flamengo:
+Nome                        CPF            Senha
+------------------------------------------------------------
+Zico                        74557518699    Zico@8699
+Romário                     77699111257    Romario@1257
+Adriano                     80840703805    Adriano@3805
+Arrascaeta                  83982296404    Arrascaeta@6404
+Gabigol                     87123889045    Gabigol@9045
 
