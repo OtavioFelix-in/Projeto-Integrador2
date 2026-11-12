@@ -1,13 +1,11 @@
 # MER — Sistema de Atendimento de Pronto Socorro
 
-Banco MySQL, 6 tabelas: `usuario`, `paciente`, `atendimento`, `triagem`, `medicamento`, `prescricao`.
+Banco MySQL, 4 tabelas: `usuario`, `paciente`, `atendimento`, `triagem`.
 
 ```mermaid
 erDiagram
     PACIENTE ||--o{ ATENDIMENTO : "procura"
     ATENDIMENTO ||--o| TRIAGEM : "passa"
-    ATENDIMENTO ||--o{ PRESCRICAO : "recebe"
-    MEDICAMENTO ||--o{ PRESCRICAO : "aparece em"
     USUARIO ||--o{ ATENDIMENTO : "abre (recepcao)"
     USUARIO ||--o{ TRIAGEM : "realiza (enfermagem)"
     USUARIO |o--o{ ATENDIMENTO : "atende (medico)"
@@ -46,6 +44,7 @@ erDiagram
         int id_medico FK "preenchido no atendimento"
         datetime data_hora_atendimento
         varchar diagnostico
+        text receita "texto livre do medico"
     }
 
     TRIAGEM {
@@ -60,20 +59,6 @@ erDiagram
         tinyint classificacao "Manchester 1 a 5"
     }
 
-    MEDICAMENTO {
-        int id_medicamento PK
-        varchar nome
-        varchar apresentacao "ex: 500 mg comprimido"
-        tinyint ativo "1 = na lista, 0 = fora"
-    }
-
-    PRESCRICAO {
-        int id_prescricao PK
-        int id_atendimento FK
-        int id_medicamento FK
-        varchar dosagem
-        varchar frequencia
-    }
 ```
 
 ## Relacionamentos
@@ -82,13 +67,11 @@ erDiagram
 |---|---|---|---|
 | paciente | atendimento | 1 : N | cada ida ao pronto-socorro é um atendimento novo |
 | atendimento | triagem | 1 : 0..1 | cada atendimento passa por uma triagem (ainda não existe enquanto `aberto`) |
-| atendimento | prescricao | 1 : N | o médico pode passar vários remédios |
-| medicamento | prescricao | 1 : N | o mesmo remédio aparece em vários atendimentos |
 | usuario (recepção) | atendimento | 1 : N | quem abriu o atendimento |
 | usuario (enfermagem) | triagem | 1 : N | quem fez a triagem |
 | usuario (médico) | atendimento | 0..1 : N | quem atendeu (vazio até atender) |
 
-`atendimento` e `medicamento` são N : N, e a `prescricao` é a tabela que liga os dois, com a dosagem e a frequência.
+A receita não é uma tabela: é um texto livre (`receita`) no próprio `atendimento`, porque cada atendimento tem uma só, igual ao diagnóstico.
 
 ## A esteira (campo `status` do atendimento)
 
@@ -96,7 +79,7 @@ erDiagram
 |---|---|---|---|
 | Recepção | recepcionista | `paciente` + `atendimento` | `aberto` |
 | Triagem | enfermagem | `triagem` | `triado` |
-| Atendimento | médico | `prescricao` + diagnóstico no `atendimento` | `atendido` |
+| Atendimento | médico | diagnóstico e receita no `atendimento` | `atendido` |
 
 Pode virar `cancelado` antes de `atendido`. O histórico é uma consulta (`WHERE status = 'atendido'`), não uma tabela.
 

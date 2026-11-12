@@ -3,17 +3,37 @@ const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 
 // sem login ou com outro perfil, volta pro login
 if (!usuario || usuario.perfil !== 'medico') {
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
+  throw new Error('sem login'); // para o resto do código
 }
+
+// voltou pelo Voltar e não tem mais login: manda pro login
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted && !sessionStorage.getItem('usuario')) {
+    window.location.replace('login.html');
+  }
+});
 
 // mostra o nome no topo
 document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
-document.getElementById('sair').addEventListener('click', () => {
+document.getElementById('sair').addEventListener('click', async () => {
+  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
   sessionStorage.clear();
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
 });
+
+// fetch que volta pro login se a sessão do servidor acabou (ex: reiniciou o node)
+async function pedir(url, opcoes) {
+  const resposta = await fetch(url, opcoes);
+  if (resposta.status === 401) {
+    sessionStorage.clear();
+    window.location.replace('login.html');
+    throw new Error('sessão acabou');
+  }
+  return resposta;
+}
 
 // classificação de Manchester: número -> nome (a cor vem do style.css, classe prioridade-N)
 const classificacoes = {
@@ -54,7 +74,7 @@ function atualizarResumo() {
 // busca os triados no servidor e monta a tabela.
 // já vem na ordem certa: o servidor ordena por classificação e depois por chegada
 async function carregarPainel() {
-  const resposta = await fetch('/painel');
+  const resposta = await pedir('/painel');
   painel = await resposta.json();
   atualizarResumo();
 
@@ -94,46 +114,6 @@ async function carregarPainel() {
   });
 }
 
-// preenche a lista de medicamentos (uma vez só, quando a tela abre)
-async function carregarMedicamentos() {
-  const resposta = await fetch('/medicamentos');
-  const lista = await resposta.json();
-
-  // cada remédio vira uma opção do select.
-  // o value é o id (vai pro banco) e o texto é o que o médico vê
-  const select = document.getElementById('id_medicamento');
-  lista.forEach(m => {
-    const opcao = document.createElement('option');
-    opcao.value = m.id_medicamento;
-    opcao.textContent = m.nome + ' - ' + m.apresentacao;
-    select.appendChild(opcao);
-  });
-}
-
-// mostra os remédios que já foram passados pro paciente atual
-async function carregarPrescricoes() {
-  const resposta = await fetch('/atendimentos/' + atual.id_atendimento + '/prescricoes');
-  const lista = await resposta.json();
-
-  const tbody = document.getElementById('prescricoes');
-  tbody.innerHTML = '';
-
-  if (lista.length === 0) {
-    const tr = document.createElement('tr');
-    celula(tr, 'Nenhuma medicação lançada.').colSpan = 3;
-    tbody.appendChild(tr);
-    return;
-  }
-
-  lista.forEach(m => {
-    const tr = document.createElement('tr');
-    celula(tr, m.nome + ' - ' + m.apresentacao);
-    celula(tr, m.dosagem);
-    celula(tr, m.frequencia);
-    tbody.appendChild(tr);
-  });
-}
-
 // médico chama o paciente: abre a parte da consulta com os dados da triagem
 function chamar(i) {
   atual = painel[i]; // guarda quem está sendo atendido
@@ -145,51 +125,22 @@ function chamar(i) {
   document.getElementById('sinalTemperatura').textContent = atual.temperatura + ' °C';
   document.getElementById('sinalBatimentos').textContent = atual.batimentos_cardiacos + ' bpm';
   document.getElementById('sinalQueixas').textContent = atual.queixas;
-  // limpa os formulários do paciente anterior
-  document.getElementById('formPrescricao').reset();
+  // limpa o formulário do paciente anterior
   document.getElementById('formFinalizar').reset();
   mostrarMensagem('', '');
-  carregarPrescricoes();
   document.getElementById('consulta').scrollIntoView({ behavior: 'smooth' }); // rola até a consulta
 }
 
-// adicionar medicação
-document.getElementById('formPrescricao').addEventListener('submit', async (evento) => {
+// finalizar atendimento com o diagnóstico e a receita
+document.getElementById('formFinalizar').addEventListener('submit', async (evento) => {
   evento.preventDefault(); // não deixa a página recarregar
 
-  const prescricao = {
-    id_medicamento: document.getElementById('id_medicamento').value, // id do remédio escolhido
-    dosagem: document.getElementById('dosagem').value.trim(),
-    frequencia: document.getElementById('frequencia').value.trim()
-  };
-
-  const resposta = await fetch('/atendimentos/' + atual.id_atendimento + '/prescricoes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(prescricao)
-  });
-  const dados = await resposta.json();
-
-  if (!resposta.ok) {
-    mostrarMensagem(dados.erro, 'erro');
-    return;
-  }
-
-  // limpa pra lançar o próximo e atualiza a lista de remédios do paciente
-  document.getElementById('formPrescricao').reset();
-  carregarPrescricoes();
-});
-
-// finalizar atendimento com o diagnóstico
-document.getElementById('formFinalizar').addEventListener('submit', async (evento) => {
-  evento.preventDefault();
-
-  const resposta = await fetch('/atendimentos/' + atual.id_atendimento + '/finalizar', {
+  const resposta = await pedir('/atendimentos/' + atual.id_atendimento + '/finalizar', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      id_medico: usuario.id_usuario, // quem atendeu
-      diagnostico: document.getElementById('diagnostico').value.trim()
+      diagnostico: document.getElementById('diagnostico').value.trim(),
+      receita: document.getElementById('receita').value.trim() // pode ficar vazia
     })
   });
   const dados = await resposta.json();
@@ -212,7 +163,6 @@ document.getElementById('fechar').addEventListener('click', () => {
   atual = null;
 });
 
-// botão Atualizar, e já carrega tudo quando a tela abre
+// botão Atualizar, e já carrega o painel quando a tela abre
 document.getElementById('atualizar').addEventListener('click', carregarPainel);
 carregarPainel();
-carregarMedicamentos();

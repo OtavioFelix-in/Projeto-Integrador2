@@ -4,17 +4,37 @@ const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 // sem login ou com outro perfil, volta pro login
 // (isso só esconde a tela, quem protege de verdade é o servidor)
 if (!usuario || usuario.perfil !== 'recepcao') {
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
+  throw new Error('sem login'); // para o resto do código
 }
+
+// voltou pelo Voltar e não tem mais login: manda pro login
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted && !sessionStorage.getItem('usuario')) {
+    window.location.replace('login.html');
+  }
+});
 
 // mostra o nome no topo
 document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
-document.getElementById('sair').addEventListener('click', () => {
+document.getElementById('sair').addEventListener('click', async () => {
+  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
   sessionStorage.clear();
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
 });
+
+// fetch que volta pro login se a sessão do servidor acabou (ex: reiniciou o node)
+async function pedir(url, opcoes) {
+  const resposta = await fetch(url, opcoes);
+  if (resposta.status === 401) {
+    sessionStorage.clear();
+    window.location.replace('login.html');
+    throw new Error('sessão acabou');
+  }
+  return resposta;
+}
 
 // ids dos campos do formulário. são iguais às colunas da tabela paciente,
 // assim o servidor recebe cada dado já com o nome da coluna
@@ -53,12 +73,11 @@ document.getElementById('formPaciente').addEventListener('submit', async (evento
   campos.forEach(nome => {
     paciente[nome] = campo(nome);
   });
-  paciente.id_recepcionista = usuario.id_usuario; // quem está abrindo
 
   // o campo escondido idAtendimento só tem valor quando clicou em Alterar.
   // com id é alteração (PUT), sem id é atendimento novo (POST)
   const id = document.getElementById('idAtendimento').value;
-  const resposta = await fetch(id ? '/atendimentos/' + id : '/atendimentos', {
+  const resposta = await pedir(id ? '/atendimentos/' + id : '/atendimentos', {
     method: id ? 'PUT' : 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(paciente)
@@ -111,7 +130,7 @@ async function buscar() {
   }
 
   // encodeURIComponent protege caracteres especiais no endereço
-  const resposta = await fetch('/atendimentos?busca=' + encodeURIComponent(busca));
+  const resposta = await pedir('/atendimentos?busca=' + encodeURIComponent(busca));
   encontrados = await resposta.json();
 
   // limpa a tabela antes de montar de novo
@@ -175,7 +194,7 @@ async function cancelarAtendimento(id) {
     return;
   }
 
-  const resposta = await fetch('/atendimentos/' + id + '/cancelar', { method: 'PATCH' });
+  const resposta = await pedir('/atendimentos/' + id + '/cancelar', { method: 'PATCH' });
   const dados = await resposta.json();
 
   if (!resposta.ok) {

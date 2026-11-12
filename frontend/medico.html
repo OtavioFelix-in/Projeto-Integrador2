@@ -78,37 +78,13 @@
           </div>
           <p><strong>Queixas:</strong> <span id="sinalQueixas"></span></p>
 
-          <h3>Medicações</h3>
-          <table class="tabela">
-            <thead>
-              <tr>
-                <th>Medicamento</th>
-                <th>Dosagem</th>
-                <th>Frequência</th>
-              </tr>
-            </thead>
-            <tbody id="prescricoes"></tbody>
-          </table>
-
-          <form id="formPrescricao" class="form-linha">
-            <label>Medicamento
-              <select id="id_medicamento" required>
-                <option value="">Selecione</option>
-              </select>
-            </label>
-            <label>Dosagem
-              <input type="text" id="dosagem" required>
-            </label>
-            <label>Frequência
-              <input type="text" id="frequencia" required>
-            </label>
-            <button type="submit" class="botao botao-secundario">Adicionar</button>
-          </form>
-
           <h3>Finalizar atendimento</h3>
           <form id="formFinalizar">
             <label>Diagnóstico
               <input type="text" id="diagnostico" maxlength="300" required>
+            </label>
+            <label>Receita
+              <textarea id="receita" rows="5" placeholder="Ex: Dipirona 500 mg, 1 comprimido de 6 em 6 horas"></textarea>
             </label>
             <div class="acoes">
               <button type="button" id="fechar" class="botao botao-secundario">Fechar</button>

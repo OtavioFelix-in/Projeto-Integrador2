@@ -3,6 +3,8 @@ const express = require('express');      // cria o servidor e as rotas
 const mysql = require('mysql2/promise'); // conversa com o MySQL (versão com promise, pra usar await)
 const path = require('path');            // monta caminho de pasta
 const bcrypt = require('bcryptjs');      // hash da senha
+const session = require('express-session'); // guarda quem está logado
+const crypto = require('crypto');        // gera o segredo da sessão
 
 const app = express();
 
@@ -23,6 +25,15 @@ const banco = mysql.createPool({
 
 app.use(express.static(mapa)); // serve o html, css e js do frontend
 app.use(express.json());       // transforma o json que a tela manda em req.body
+
+// sessão: depois do login o navegador recebe um cookie e o servidor sabe quem é em cada pedido.
+// o segredo muda a cada vez que o servidor liga, então reiniciar desloga todo mundo
+app.use(session({
+  secret: crypto.randomBytes(32).toString('hex'),
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, sameSite: 'strict' } // o js da página não lê o cookie
+}));
 
 
 // ---------- funções de apoio ----------
@@ -66,6 +77,23 @@ function validarPaciente(p) {
     return 'Paciente menor de idade: informe o nome do pai ou da mãe.';
   }
   return null;
+}
+
+// porteiro das rotas: só deixa passar quem está logado e tem um dos perfis
+// ex: exigir('medico') na rota do painel
+function exigir(...perfis) {
+  return (req, res, next) => {
+    const usuario = req.session.usuario;
+    // 401 = não está logado
+    if (!usuario) {
+      return res.status(401).json({ erro: 'Faça login de novo.' });
+    }
+    // 403 = está logado, mas o perfil não pode usar essa rota
+    if (perfis.length > 0 && !perfis.includes(usuario.perfil)) {
+      return res.status(403).json({ erro: 'Seu perfil não tem acesso a isso.' });
+    }
+    next(); // tudo certo, segue pra rota
+  };
 }
 
 // busca o atendimento pelo id (devolve undefined se não existir)
@@ -115,50 +143,27 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ erro: 'CPF ou senha inválidos.' });
     }
 
-    // deu certo: devolve quem entrou. o hash não vai junto
-    res.json({ id_usuario: user.id_usuario, nome: user.nome, perfil: user.perfil });
+    // deu certo: guarda na sessão e devolve quem entrou. o hash não vai junto
+    const logado = { id_usuario: user.id_usuario, nome: user.nome, perfil: user.perfil };
+    req.session.usuario = logado;
+    res.json(logado);
   } catch (error) {
     erroServidor(res, error);
   }
 });
 
-// cadastro de profissional (requisito 5.1 da documentação)
-app.post('/usuarios', async (req, res) => {
-  try {
-    const u = req.body;
-    const cpf = soNumeros(u.cpf);
-
-    // campos obrigatórios
-    if (!u.nome || cpf.length !== 11 || !u.telefone || !u.senha || !u.perfil) {
-      return res.status(400).json({ erro: 'Preencha nome, CPF (11 números), telefone, senha e perfil.' });
-    }
-    // só aceita os 3 perfis do sistema
-    if (!['recepcao', 'enfermagem', 'medico'].includes(u.perfil)) {
-      return res.status(400).json({ erro: 'Perfil deve ser recepcao, enfermagem ou medico.' });
-    }
-
-    // a senha nunca é gravada pura, só o hash
-    const hash = await bcrypt.hash(u.senha, 10);
-
-    // o login é o próprio CPF
-    const [novo] = await banco.query(
-      `INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [u.nome, cpf, u.telefone, u.email || null, cpf, hash, u.perfil]
-    );
-
-    // 201 = criado
-    res.status(201).json({ id_usuario: novo.insertId });
-  } catch (error) {
-    erroServidor(res, error);
-  }
+// sair: apaga a sessão no servidor
+app.post('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ ok: true });
+  });
 });
 
 
 // ---------- recepção ----------
 
 // abre um atendimento (cadastra o paciente se ele ainda não existe)
-app.post('/atendimentos', async (req, res) => {
+app.post('/atendimentos', exigir('recepcao'), async (req, res) => {
   try {
     const p = req.body;
 
@@ -190,9 +195,10 @@ app.post('/atendimentos', async (req, res) => {
     }
 
     // abre o atendimento. o status começa como 'aberto' (DEFAULT do banco)
+    // quem abriu vem da sessão, não da tela
     const [atend] = await banco.query(
       'INSERT INTO atendimento (id_paciente, id_recepcionista) VALUES (?, ?)',
-      [idPaciente, p.id_recepcionista]
+      [idPaciente, req.session.usuario.id_usuario]
     );
 
     res.status(201).json({
@@ -205,7 +211,7 @@ app.post('/atendimentos', async (req, res) => {
 });
 
 // busca por número (AT0001) ou CPF
-app.get('/atendimentos', async (req, res) => {
+app.get('/atendimentos', exigir('recepcao'), async (req, res) => {
   try {
     const busca = String(req.query.busca || '').trim().toUpperCase();
 
@@ -237,7 +243,7 @@ app.get('/atendimentos', async (req, res) => {
 });
 
 // altera os dados do paciente de um atendimento
-app.put('/atendimentos/:id', async (req, res) => {
+app.put('/atendimentos/:id', exigir('recepcao'), async (req, res) => {
   try {
     const p = req.body;
 
@@ -273,7 +279,7 @@ app.put('/atendimentos/:id', async (req, res) => {
 });
 
 // cancela, se o médico ainda não atendeu
-app.patch('/atendimentos/:id/cancelar', async (req, res) => {
+app.patch('/atendimentos/:id/cancelar', exigir('recepcao'), async (req, res) => {
   try {
     const atend = await buscarAtendimento(req.params.id);
     if (!atend) {
@@ -298,7 +304,7 @@ app.patch('/atendimentos/:id/cancelar', async (req, res) => {
 
 // pacientes esperando triagem, por ordem de chegada.
 // só pega status 'aberto': quem já foi triado não aparece mais aqui
-app.get('/triagem/fila', async (req, res) => {
+app.get('/triagem/fila', exigir('enfermagem'), async (req, res) => {
   try {
     const [linhas] = await banco.query(
       `SELECT a.id_atendimento, a.data_hora_entrada, p.nome_completo, p.data_nascimento, p.sexo
@@ -320,7 +326,7 @@ app.get('/triagem/fila', async (req, res) => {
 });
 
 // grava a triagem e manda o paciente pro médico
-app.post('/atendimentos/:id/triagem', async (req, res) => {
+app.post('/atendimentos/:id/triagem', exigir('enfermagem'), async (req, res) => {
   try {
     const t = req.body;
 
@@ -341,10 +347,11 @@ app.post('/atendimentos/:id/triagem', async (req, res) => {
       return res.status(400).json({ erro: 'Só dá para fazer triagem de atendimento aberto.' });
     }
 
+    // quem fez a triagem vem da sessão
     await banco.query(
       `INSERT INTO triagem (id_atendimento, id_enfermeiro, pressao_arterial, temperatura, batimentos_cardiacos, queixas, classificacao)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [req.params.id, t.id_enfermeiro, t.pressao_arterial, t.temperatura, t.batimentos_cardiacos, t.queixas, t.classificacao]
+      [req.params.id, req.session.usuario.id_usuario, t.pressao_arterial, t.temperatura, t.batimentos_cardiacos, t.queixas, t.classificacao]
     );
     // muda o status: sai da fila da triagem e entra no painel do médico
     await banco.query("UPDATE atendimento SET status = 'triado' WHERE id_atendimento = ?", [req.params.id]);
@@ -360,7 +367,7 @@ app.post('/atendimentos/:id/triagem', async (req, res) => {
 
 // painel: só os triados, do mais urgente pro menos urgente, depois por chegada.
 // a classificação é número (1 vermelho ... 5 azul), então o ORDER BY já ordena certo
-app.get('/painel', async (req, res) => {
+app.get('/painel', exigir('medico'), async (req, res) => {
   try {
     const [linhas] = await banco.query(
       `SELECT a.id_atendimento, a.data_hora_entrada,
@@ -383,61 +390,8 @@ app.get('/painel', async (req, res) => {
   }
 });
 
-// lista de remédios pro médico escolher (só os ativos)
-app.get('/medicamentos', async (req, res) => {
-  try {
-    const [linhas] = await banco.query(
-      'SELECT id_medicamento, nome, apresentacao FROM medicamento WHERE ativo = TRUE ORDER BY nome, apresentacao'
-    );
-    res.json(linhas);
-  } catch (error) {
-    erroServidor(res, error);
-  }
-});
-
-// remédios já passados nesse atendimento (junta com o catálogo pra trazer o nome)
-app.get('/atendimentos/:id/prescricoes', async (req, res) => {
-  try {
-    const [linhas] = await banco.query(
-      `SELECT pr.id_prescricao, m.nome, m.apresentacao, pr.dosagem, pr.frequencia
-         FROM prescricao pr
-         JOIN medicamento m ON m.id_medicamento = pr.id_medicamento
-        WHERE pr.id_atendimento = ?
-        ORDER BY pr.id_prescricao`,
-      [req.params.id]
-    );
-    res.json(linhas);
-  } catch (error) {
-    erroServidor(res, error);
-  }
-});
-
-// médico passa um remédio (um atendimento pode ter vários)
-app.post('/atendimentos/:id/prescricoes', async (req, res) => {
-  try {
-    const m = req.body;
-    if (!m.id_medicamento || !m.dosagem || !m.frequencia) {
-      return res.status(400).json({ erro: 'Escolha o medicamento e preencha dosagem e frequência.' });
-    }
-
-    // só prescreve pra quem está no painel (triado)
-    const atend = await buscarAtendimento(req.params.id);
-    if (!atend || atend.status !== 'triado') {
-      return res.status(400).json({ erro: 'Só dá para prescrever em atendimento triado.' });
-    }
-
-    await banco.query(
-      'INSERT INTO prescricao (id_atendimento, id_medicamento, dosagem, frequencia) VALUES (?, ?, ?, ?)',
-      [req.params.id, m.id_medicamento, m.dosagem, m.frequencia]
-    );
-    res.status(201).json({ ok: true });
-  } catch (error) {
-    erroServidor(res, error);
-  }
-});
-
-// médico finaliza com o diagnóstico
-app.patch('/atendimentos/:id/finalizar', async (req, res) => {
+// médico finaliza com o diagnóstico e a receita (receita pode ficar vazia)
+app.patch('/atendimentos/:id/finalizar', exigir('medico'), async (req, res) => {
   try {
     if (!req.body.diagnostico) {
       return res.status(400).json({ erro: 'Informe o diagnóstico.' });
@@ -448,12 +402,12 @@ app.patch('/atendimentos/:id/finalizar', async (req, res) => {
       return res.status(400).json({ erro: 'Só dá para finalizar atendimento triado.' });
     }
 
-    // grava quem atendeu, o diagnóstico e a hora. status 'atendido' = vira histórico
+    // grava quem atendeu (da sessão), o diagnóstico, a receita e a hora. status 'atendido' = vira histórico
     await banco.query(
       `UPDATE atendimento
-          SET status = 'atendido', id_medico = ?, diagnostico = ?, data_hora_atendimento = NOW()
+          SET status = 'atendido', id_medico = ?, diagnostico = ?, receita = ?, data_hora_atendimento = NOW()
         WHERE id_atendimento = ?`,
-      [req.body.id_medico, req.body.diagnostico, req.params.id]
+      [req.session.usuario.id_usuario, req.body.diagnostico, req.body.receita || null, req.params.id]
     );
     res.json({ ok: true });
   } catch (error) {

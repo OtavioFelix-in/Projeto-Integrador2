@@ -12,14 +12,14 @@ O sistema roda no próprio computador e é aberto pelo navegador em `http://loca
 - Node.js com Express: servidor (rotas, regras de negócio e conexão com o banco)
 - JavaScript, HTML e CSS: telas
 
-Bibliotecas do servidor: `express`, `mysql2` e `bcryptjs` (para guardar as senhas com hash).
+Bibliotecas do servidor: `express`, `mysql2`, `bcryptjs` (para guardar as senhas com hash) e `express-session` (para saber quem está logado).
 
 ## Estrutura de pastas
 
 ```
 Projeto Integrador/
   bd/
-    create_table.sql     cria o banco, as tabelas, os usuários de teste e os medicamentos
+    create_table.sql     cria o banco, as tabelas e os usuários de teste
   backend/
     server.js            servidor e todas as rotas
     .env.example         modelo do arquivo de configuração do banco
@@ -93,8 +93,7 @@ flowchart TD
     S2 --> M1[Paciente aparece no painel do médico<br/>ordenado por classificação e chegada]
     M --> M1
     M1 --> M2[Médico chama o paciente e vê a triagem]
-    M2 --> M3[Escolhe os medicamentos da lista,<br/>com dosagem e frequência]
-    M3 --> M4[Escreve o diagnóstico e finaliza]
+    M2 --> M4[Escreve o diagnóstico e a receita<br/>e finaliza]
     M4 --> S3([status: atendido])
 
     S1 -.->|recepção cancela| C([status: cancelado])
@@ -122,14 +121,12 @@ Resumo dos status:
 
 ## Modelo de dados (MER)
 
-São 6 tabelas: `usuario`, `paciente`, `atendimento`, `triagem`, `medicamento` e `prescricao`.
+São 4 tabelas: `usuario`, `paciente`, `atendimento` e `triagem`.
 
 ```mermaid
 erDiagram
     PACIENTE ||--o{ ATENDIMENTO : "procura"
     ATENDIMENTO ||--o| TRIAGEM : "passa"
-    ATENDIMENTO ||--o{ PRESCRICAO : "recebe"
-    MEDICAMENTO ||--o{ PRESCRICAO : "aparece em"
     USUARIO ||--o{ ATENDIMENTO : "abre (recepcao)"
     USUARIO ||--o{ TRIAGEM : "realiza (enfermagem)"
     USUARIO |o--o{ ATENDIMENTO : "atende (medico)"
@@ -168,6 +165,7 @@ erDiagram
         int id_medico FK
         datetime data_hora_atendimento
         varchar diagnostico
+        text receita "texto livre do medico"
     }
 
     TRIAGEM {
@@ -182,37 +180,31 @@ erDiagram
         tinyint classificacao "Manchester 1 a 5"
     }
 
-    MEDICAMENTO {
-        int id_medicamento PK
-        varchar nome
-        varchar apresentacao
-        boolean ativo
-    }
-
-    PRESCRICAO {
-        int id_prescricao PK
-        int id_atendimento FK
-        int id_medicamento FK
-        varchar dosagem
-        varchar frequencia
-    }
 ```
 
 Observações sobre o modelo:
 
 - Um paciente pode ter vários atendimentos, um para cada vez que vai ao pronto socorro.
 - Cada atendimento tem no máximo uma triagem.
-- A `prescricao` liga o atendimento ao catálogo de `medicamento`, com a dosagem e a frequência daquele paciente.
+- A receita é um texto livre que o médico digita ao finalizar, guardado no próprio `atendimento` (uma por atendimento, igual ao diagnóstico).
 - O histórico não é uma tabela separada: são os atendimentos com status `atendido`.
 - A senha do usuário é guardada só como hash bcrypt.
 - O número `AT0001` não é gravado no banco: o servidor monta a partir do `id_atendimento`.
+
+## Login e acesso
+
+- Os profissionais não são cadastrados pelo sistema: eles já vêm no `create_table.sql`.
+- No login, o servidor guarda o usuário numa sessão (`express-session`) e o navegador recebe um cookie.
+- Cada rota só aceita o perfil dela: sem login o servidor responde 401, e com o perfil errado responde 403.
+- Quem abriu, triou ou atendeu é gravado a partir da sessão, e não de um dado mandado pela tela.
+- Sair, ou voltar para a tela de login, apaga a sessão. Reiniciar o servidor desloga todo mundo.
 
 ## Rotas do servidor
 
 | Método | Rota | Tela | O que faz |
 |---|---|---|---|
-| POST | /login | Login | confere CPF e senha |
-| POST | /usuarios | - | cadastra um profissional |
+| POST | /login | Login | confere CPF e senha e abre a sessão |
+| POST | /logout | Todas | apaga a sessão |
 | POST | /atendimentos | Recepção | cadastra o paciente e abre o atendimento |
 | GET | /atendimentos?busca= | Recepção | busca por número ou CPF |
 | PUT | /atendimentos/:id | Recepção | altera os dados do paciente |
@@ -220,10 +212,7 @@ Observações sobre o modelo:
 | GET | /triagem/fila | Triagem | lista os atendimentos abertos |
 | POST | /atendimentos/:id/triagem | Triagem | grava a triagem |
 | GET | /painel | Médico | lista os triados por prioridade |
-| GET | /medicamentos | Médico | lista os medicamentos |
-| GET | /atendimentos/:id/prescricoes | Médico | lista os medicamentos já passados |
-| POST | /atendimentos/:id/prescricoes | Médico | passa um medicamento |
-| PATCH | /atendimentos/:id/finalizar | Médico | grava o diagnóstico e finaliza |
+| PATCH | /atendimentos/:id/finalizar | Médico | grava o diagnóstico e a receita e finaliza |
 
 ## Regras de negócio
 
@@ -231,6 +220,6 @@ Observações sobre o modelo:
 - Paciente menor de 18 anos precisa ter o nome do pai ou da mãe.
 - Se o CPF já está cadastrado, o paciente é reaproveitado e só um atendimento novo é aberto.
 - A triagem só pode ser feita em atendimento aberto.
-- O médico só prescreve e finaliza atendimento triado.
+- O médico só finaliza atendimento triado.
 - Atendimento atendido não pode ser alterado nem cancelado.
 - Só usuário ativo consegue entrar no sistema.
