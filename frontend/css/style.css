@@ -245,17 +245,22 @@ main {
   color: var(--texto-suave);
 }
 
-.caixa input, .caixa select {
+.caixa input, .caixa select, .caixa textarea {
   width: 100%;
   padding: 10px 12px;
   margin-top: 4px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
+  font-family: inherit; /* senão o textarea fica com outra fonte */
   color: var(--texto);
 }
 
-.caixa input:focus, .caixa select:focus {
+.caixa textarea {
+  resize: vertical; /* só aumenta pra baixo */
+}
+
+.caixa input:focus, .caixa select:focus, .caixa textarea:focus {
   outline: none;
   border-color: var(--azul);
   box-shadow: 0 0 0 3px rgba(30, 91, 216, 0.15);

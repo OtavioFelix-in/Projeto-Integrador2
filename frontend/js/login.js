@@ -5,6 +5,12 @@ const telas = {
   medico: 'medico.html'
 };
 
+// abriu o login (ou voltou pra ele): apaga o login anterior
+window.addEventListener('pageshow', () => {
+  sessionStorage.clear();
+  fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor também
+});
+
 // pega o formulário de login do html
 const formLogin = document.getElementById('formLogin');
 

@@ -3,17 +3,37 @@ const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 
 // sem login ou com outro perfil, volta pro login
 if (!usuario || usuario.perfil !== 'enfermagem') {
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
+  throw new Error('sem login'); // para o resto do código
 }
+
+// voltou pelo Voltar e não tem mais login: manda pro login
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted && !sessionStorage.getItem('usuario')) {
+    window.location.replace('login.html');
+  }
+});
 
 // mostra o nome no topo
 document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
-document.getElementById('sair').addEventListener('click', () => {
+document.getElementById('sair').addEventListener('click', async () => {
+  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
   sessionStorage.clear();
-  window.location.href = 'login.html';
+  window.location.replace('login.html');
 });
+
+// fetch que volta pro login se a sessão do servidor acabou (ex: reiniciou o node)
+async function pedir(url, opcoes) {
+  const resposta = await fetch(url, opcoes);
+  if (resposta.status === 401) {
+    sessionStorage.clear();
+    window.location.replace('login.html');
+    throw new Error('sessão acabou');
+  }
+  return resposta;
+}
 
 // pacientes esperando triagem (o botão Fazer triagem pega os dados daqui)
 let fila = [];
@@ -36,7 +56,7 @@ function celula(tr, texto) {
 // busca no servidor quem está esperando triagem e monta a tabela.
 // o servidor só devolve atendimentos com status 'aberto', por ordem de chegada
 async function carregarFila() {
-  const resposta = await fetch('/triagem/fila');
+  const resposta = await pedir('/triagem/fila');
   fila = await resposta.json();
 
   // limpa a tabela antes de montar de novo
@@ -92,7 +112,6 @@ document.getElementById('formTriagem').addEventListener('submit', async (evento)
 
   // os nomes são iguais às colunas da tabela triagem
   const triagem = {
-    id_enfermeiro: usuario.id_usuario, // quem fez a triagem
     pressao_arterial: document.getElementById('pressao_arterial').value.trim(),
     temperatura: document.getElementById('temperatura').value,
     batimentos_cardiacos: document.getElementById('batimentos_cardiacos').value,
@@ -100,7 +119,7 @@ document.getElementById('formTriagem').addEventListener('submit', async (evento)
     classificacao: document.getElementById('classificacao').value // 1 a 5 (Manchester)
   };
 
-  const resposta = await fetch('/atendimentos/' + id + '/triagem', {
+  const resposta = await pedir('/atendimentos/' + id + '/triagem', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(triagem)
