@@ -19,7 +19,11 @@ document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
 document.getElementById('sair').addEventListener('click', async () => {
-  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  try {
+    await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  } catch (erro) {
+    // servidor fora do ar: sai mesmo assim
+  }
   sessionStorage.clear();
   window.location.replace('login.html');
 });
@@ -57,11 +61,19 @@ function celula(tr, texto) {
 // o servidor só devolve atendimentos com status 'aberto', por ordem de chegada
 async function carregarFila() {
   const resposta = await pedir('/triagem/fila');
-  fila = await resposta.json();
+  const dados = await resposta.json();
 
   // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('fila');
   tbody.innerHTML = '';
+
+  // o servidor deu erro (ex: banco fora do ar): avisa em vez de mostrar a fila vazia
+  if (!resposta.ok) {
+    fila = [];
+    mostrarMensagem(dados.erro, 'erro');
+    return;
+  }
+  fila = dados;
 
   if (fila.length === 0) {
     const tr = document.createElement('tr');
@@ -119,23 +131,42 @@ document.getElementById('formTriagem').addEventListener('submit', async (evento)
     classificacao: document.getElementById('classificacao').value // 1 a 5 (Manchester)
   };
 
-  const resposta = await pedir('/atendimentos/' + id + '/triagem', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(triagem)
-  });
-  const dados = await resposta.json();
+  // desliga o botão enquanto o servidor responde, pra não mandar a triagem duas vezes
+  const botaoSalvar = evento.submitter;
+  botaoSalvar.disabled = true;
 
-  // o servidor recusou (campo faltando, pressão fora do formato...): mostra o motivo
-  if (!resposta.ok) {
-    mostrarMensagem(dados.erro, 'erro');
-    return;
+  try {
+    const resposta = await pedir('/atendimentos/' + id + '/triagem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(triagem)
+    });
+    const dados = await resposta.json();
+
+    // 409 = outra pessoa já triou esse paciente: fecha o formulário e atualiza a fila
+    if (resposta.status === 409) {
+      document.getElementById('formTriagem').hidden = true;
+      mostrarMensagem(dados.erro, 'erro');
+      carregarFila();
+      return;
+    }
+
+    // o servidor recusou (campo faltando, pressão fora do formato...): mostra o motivo
+    if (!resposta.ok) {
+      mostrarMensagem(dados.erro, 'erro');
+      return;
+    }
+
+    // deu certo: o status virou 'triado', então recarregar a fila tira o paciente da lista
+    document.getElementById('formTriagem').hidden = true;
+    mostrarMensagem('Triagem salva. Paciente enviado para o médico.', 'sucesso');
+    carregarFila();
+  } catch (erro) {
+    // servidor desligado ou sem rede
+    mostrarMensagem('Sem conexão com o servidor. Tente de novo.', 'erro');
+  } finally {
+    botaoSalvar.disabled = false; // liga o botão de novo
   }
-
-  // deu certo: o status virou 'triado', então recarregar a fila tira o paciente da lista
-  document.getElementById('formTriagem').hidden = true;
-  mostrarMensagem('Triagem salva. Paciente enviado para o médico.', 'sucesso');
-  carregarFila();
 });
 
 // botão Atualizar, e já carrega a fila quando a tela abre

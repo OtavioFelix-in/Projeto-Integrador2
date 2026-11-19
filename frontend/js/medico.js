@@ -19,7 +19,11 @@ document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
 document.getElementById('sair').addEventListener('click', async () => {
-  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  try {
+    await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  } catch (erro) {
+    // servidor fora do ar: sai mesmo assim
+  }
   sessionStorage.clear();
   window.location.replace('login.html');
 });
@@ -75,12 +79,21 @@ function atualizarResumo() {
 // já vem na ordem certa: o servidor ordena por classificação e depois por chegada
 async function carregarPainel() {
   const resposta = await pedir('/painel');
-  painel = await resposta.json();
-  atualizarResumo();
+  const dados = await resposta.json();
 
   // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('painel');
   tbody.innerHTML = '';
+
+  // o servidor deu erro (ex: banco fora do ar): avisa em vez de mostrar o painel vazio
+  if (!resposta.ok) {
+    painel = [];
+    atualizarResumo();
+    mostrarMensagem(dados.erro, 'erro');
+    return;
+  }
+  painel = dados;
+  atualizarResumo();
 
   if (painel.length === 0) {
     const tr = document.createElement('tr');
@@ -116,6 +129,13 @@ async function carregarPainel() {
 
 // médico chama o paciente: abre a parte da consulta com os dados da triagem
 function chamar(i) {
+  // já tem diagnóstico ou receita escritos de outro paciente: pergunta antes de apagar
+  const escrito = document.getElementById('diagnostico').value.trim() || document.getElementById('receita').value.trim();
+  if (atual && escrito && atual.id_atendimento !== painel[i].id_atendimento &&
+      !confirm('Você tem um diagnóstico escrito para ' + atual.nome_completo + '. Trocar de paciente e apagar?')) {
+    return;
+  }
+
   atual = painel[i]; // guarda quem está sendo atendido
   document.getElementById('consulta').hidden = false;
   document.getElementById('tituloConsulta').textContent =
@@ -134,27 +154,51 @@ function chamar(i) {
 // finalizar atendimento com o diagnóstico e a receita
 document.getElementById('formFinalizar').addEventListener('submit', async (evento) => {
   evento.preventDefault(); // não deixa a página recarregar
-
-  const resposta = await pedir('/atendimentos/' + atual.id_atendimento + '/finalizar', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      diagnostico: document.getElementById('diagnostico').value.trim(),
-      receita: document.getElementById('receita').value.trim() // pode ficar vazia
-    })
-  });
-  const dados = await resposta.json();
-
-  if (!resposta.ok) {
-    mostrarMensagem(dados.erro, 'erro');
-    return;
+  if (!atual) {
+    return; // nenhum paciente chamado
   }
 
-  // deu certo: o status virou 'atendido', então recarregar o painel tira o paciente da lista
-  document.getElementById('consulta').hidden = true;
-  mostrarMensagem('Atendimento ' + atual.numero_atendimento + ' finalizado.', 'sucesso');
-  atual = null;
-  carregarPainel();
+  // desliga o botão enquanto o servidor responde, pra não finalizar duas vezes
+  const botaoFinalizar = evento.submitter;
+  botaoFinalizar.disabled = true;
+  const paciente = atual; // guarda agora, porque o atual pode mudar enquanto espera
+
+  try {
+    const resposta = await pedir('/atendimentos/' + paciente.id_atendimento + '/finalizar', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        diagnostico: document.getElementById('diagnostico').value.trim(),
+        receita: document.getElementById('receita').value.trim() // pode ficar vazia
+      })
+    });
+    const dados = await resposta.json();
+
+    // 409 = foi cancelado ou outro médico já atendeu: fecha a consulta e atualiza o painel
+    if (resposta.status === 409) {
+      document.getElementById('consulta').hidden = true;
+      atual = null;
+      mostrarMensagem(dados.erro, 'erro');
+      carregarPainel();
+      return;
+    }
+
+    if (!resposta.ok) {
+      mostrarMensagem(dados.erro, 'erro');
+      return;
+    }
+
+    // deu certo: o status virou 'atendido', então recarregar o painel tira o paciente da lista
+    document.getElementById('consulta').hidden = true;
+    mostrarMensagem('Atendimento ' + paciente.numero_atendimento + ' finalizado.', 'sucesso');
+    atual = null;
+    carregarPainel();
+  } catch (erro) {
+    // servidor desligado ou sem rede
+    mostrarMensagem('Sem conexão com o servidor. Tente de novo.', 'erro');
+  } finally {
+    botaoFinalizar.disabled = false; // liga o botão de novo
+  }
 });
 
 // botão Fechar: esconde a consulta sem finalizar
@@ -166,3 +210,6 @@ document.getElementById('fechar').addEventListener('click', () => {
 // botão Atualizar, e já carrega o painel quando a tela abre
 document.getElementById('atualizar').addEventListener('click', carregarPainel);
 carregarPainel();
+
+// atualiza o painel sozinho a cada 30 segundos, pra emergência nova não ficar esperando um clique
+setInterval(carregarPainel, 30000);

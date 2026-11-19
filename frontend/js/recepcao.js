@@ -20,7 +20,11 @@ document.getElementById('nomeUsuario').textContent = usuario.nome;
 
 // botão sair: limpa o login e volta pra tela de entrada
 document.getElementById('sair').addEventListener('click', async () => {
-  await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  try {
+    await fetch('/logout', { method: 'POST' }); // apaga a sessão no servidor
+  } catch (erro) {
+    // servidor fora do ar: sai mesmo assim
+  }
   sessionStorage.clear();
   window.location.replace('login.html');
 });
@@ -77,26 +81,38 @@ document.getElementById('formPaciente').addEventListener('submit', async (evento
   // o campo escondido idAtendimento só tem valor quando clicou em Alterar.
   // com id é alteração (PUT), sem id é atendimento novo (POST)
   const id = document.getElementById('idAtendimento').value;
-  const resposta = await pedir(id ? '/atendimentos/' + id : '/atendimentos', {
-    method: id ? 'PUT' : 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(paciente)
-  });
-  const dados = await resposta.json();
 
-  // o servidor recusou (regra de CPF/RG, menor de idade...): mostra o motivo
-  if (!resposta.ok) {
-    mostrarMensagem(dados.erro, 'erro');
-    return;
-  }
+  // desliga o botão enquanto o servidor responde, pra não abrir o atendimento duas vezes
+  const botaoSalvar = evento.submitter;
+  botaoSalvar.disabled = true;
 
-  if (id) {
-    mostrarMensagem('Dados alterados.', 'sucesso');
-    buscar(); // atualiza a tabela com os dados novos
-  } else {
-    mostrarMensagem('Atendimento aberto: ' + dados.numero_atendimento, 'sucesso');
+  try {
+    const resposta = await pedir(id ? '/atendimentos/' + id : '/atendimentos', {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(paciente)
+    });
+    const dados = await resposta.json();
+
+    // o servidor recusou (regra de CPF/RG, menor de idade, atendimento em andamento...): mostra o motivo
+    if (!resposta.ok) {
+      mostrarMensagem(dados.erro, 'erro');
+      return;
+    }
+
+    if (id) {
+      mostrarMensagem('Dados alterados.', 'sucesso');
+      buscar(); // atualiza a tabela com os dados novos
+    } else {
+      mostrarMensagem('Atendimento aberto: ' + dados.numero_atendimento, 'sucesso');
+    }
+    limparFormulario();
+  } catch (erro) {
+    // servidor desligado ou sem rede
+    mostrarMensagem('Sem conexão com o servidor. Tente de novo.', 'erro');
+  } finally {
+    botaoSalvar.disabled = false; // liga o botão de novo
   }
-  limparFormulario();
 });
 
 // botão Limpar
@@ -129,13 +145,32 @@ async function buscar() {
     return; // campo vazio, não busca nada
   }
 
-  // encodeURIComponent protege caracteres especiais no endereço
-  const resposta = await pedir('/atendimentos?busca=' + encodeURIComponent(busca));
-  encontrados = await resposta.json();
+  // desliga o Buscar enquanto espera, pra não buscar duas vezes
+  const botaoBuscar = document.getElementById('botaoBuscar');
+  botaoBuscar.disabled = true;
+  let resposta, dados;
+  try {
+    // encodeURIComponent protege caracteres especiais no endereço
+    resposta = await pedir('/atendimentos?busca=' + encodeURIComponent(busca));
+    dados = await resposta.json();
+  } catch (erro) {
+    mostrarMensagem('Sem conexão com o servidor. Tente de novo.', 'erro');
+    return;
+  } finally {
+    botaoBuscar.disabled = false;
+  }
 
   // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('resultado');
   tbody.innerHTML = '';
+
+  // o servidor deu erro: avisa em vez de quebrar a tabela
+  if (!resposta.ok) {
+    encontrados = [];
+    mostrarMensagem(dados.erro, 'erro');
+    return;
+  }
+  encontrados = dados;
 
   if (encontrados.length === 0) {
     const tr = document.createElement('tr');
@@ -165,7 +200,7 @@ async function buscar() {
       const cancelar = document.createElement('button');
       cancelar.className = 'botao botao-secundario';
       cancelar.textContent = 'Cancelar';
-      cancelar.addEventListener('click', () => cancelarAtendimento(a.id_atendimento));
+      cancelar.addEventListener('click', () => cancelarAtendimento(a.id_atendimento, cancelar));
       acoes.appendChild(cancelar);
     }
 
@@ -189,18 +224,25 @@ function editar(i) {
 }
 
 // cancela o atendimento (pede confirmação antes)
-async function cancelarAtendimento(id) {
+async function cancelarAtendimento(id, botao) {
   if (!confirm('Cancelar este atendimento?')) {
     return;
   }
 
-  const resposta = await pedir('/atendimentos/' + id + '/cancelar', { method: 'PATCH' });
-  const dados = await resposta.json();
+  botao.disabled = true; // não deixa cancelar duas vezes
+  try {
+    const resposta = await pedir('/atendimentos/' + id + '/cancelar', { method: 'PATCH' });
+    const dados = await resposta.json();
 
-  if (!resposta.ok) {
-    mostrarMensagem(dados.erro, 'erro');
-    return;
+    if (!resposta.ok) {
+      mostrarMensagem(dados.erro, 'erro');
+      return;
+    }
+    mostrarMensagem('Atendimento cancelado.', 'sucesso');
+    buscar(); // atualiza a tabela, o status muda pra cancelado
+  } catch (erro) {
+    mostrarMensagem('Sem conexão com o servidor. Tente de novo.', 'erro');
+  } finally {
+    botao.disabled = false;
   }
-  mostrarMensagem('Atendimento cancelado.', 'sucesso');
-  buscar(); // atualiza a tabela, o status muda pra cancelado
 }

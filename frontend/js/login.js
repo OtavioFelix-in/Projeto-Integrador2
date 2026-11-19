@@ -22,23 +22,34 @@ formLogin.addEventListener('submit', async (evento) => {
   const cpf = document.getElementById('cpf').value;
   const senha = document.getElementById('senha').value;
 
-  // manda pro servidor conferir. quem confere a senha (bcrypt) é o servidor, não a tela
-  const resposta = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cpf: cpf, senha: senha })
-  });
+  // desliga o Entrar enquanto o servidor confere, pra não mandar o login duas vezes
+  const botaoEntrar = evento.submitter;
+  botaoEntrar.disabled = true;
 
-  // transforma a resposta em objeto: { id_usuario, nome, perfil } ou { erro }
-  const dados = await resposta.json();
+  try {
+    // manda pro servidor conferir. quem confere a senha (bcrypt) é o servidor, não a tela
+    const resposta = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cpf: cpf, senha: senha })
+    });
 
-  // deu erro (401): mostra a mensagem e para aqui
-  if (!resposta.ok) {
-    document.getElementById('mensagem').textContent = dados.erro;
-    return;
+    // transforma a resposta em objeto: { id_usuario, nome, perfil } ou { erro }
+    const dados = await resposta.json();
+
+    // deu erro (401): mostra a mensagem e para aqui
+    if (!resposta.ok) {
+      document.getElementById('mensagem').textContent = dados.erro;
+      return;
+    }
+
+    // deu certo: guarda quem entrou (as outras telas leem daqui) e vai pra tela do perfil
+    sessionStorage.setItem('usuario', JSON.stringify(dados));
+    window.location.href = telas[dados.perfil];
+  } catch (erro) {
+    // servidor desligado ou sem rede
+    document.getElementById('mensagem').textContent = 'Sem conexão com o servidor. Tente de novo.';
+  } finally {
+    botaoEntrar.disabled = false; // liga o botão de novo
   }
-
-  // deu certo: guarda quem entrou (as outras telas leem daqui) e vai pra tela do perfil
-  sessionStorage.setItem('usuario', JSON.stringify(dados));
-  window.location.href = telas[dados.perfil];
 });
