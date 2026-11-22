@@ -1,249 +1,364 @@
-# PROJETO INTEGRADOR 2
-
-## SISTEMA DE ATENDIMENTO DE PRONTO SOCORRO
-
-**PUC-Campinas**  
-**2026**
-
-## 1. INTRODUÇÃO
-
-Atualmente, hospitais e pronto-socorro recebem uma grande quantidade de pacientes diariamente. Com a alta demanda, podem ocorrer filas, demora no atendimento e dificuldades para organizar os pacientes de acordo com a necessidade de cada caso.
-
-Em algumas situações, seguir apenas a ordem de chegada não é suficiente, pois existem pacientes que precisam de atendimento com maior prioridade. Por isso, é importante que os atendimentos sejam organizados de forma que os profissionais consigam identificar quais pacientes precisam ser atendidos primeiro.
-
-Dentro da proposta do Projeto Integrador 2, foi definido o desenvolvimento de um Sistema de Atendimento de Pronto Socorro. O sistema tem como objetivo auxiliar na organização dos atendimentos, acompanhando o paciente desde sua chegada à recepção, passando pela triagem, até o atendimento médico.
-
-A proposta é facilitar a organização das informações dos pacientes e ajudar os profissionais a visualizarem os atendimentos que estão aguardando. Para isso, o sistema contará com etapas de cadastro, triagem, classificação e atendimento médico.
-
-O projeto ainda está em desenvolvimento, portanto, algumas funcionalidades e telas ainda serão acrescentadas durante as próximas etapas.
-
-## 2. JUSTIFICATIVA
-
-O desenvolvimento do sistema está relacionado às dificuldades que podem ocorrer durante o atendimento em pronto-socorro, principalmente em períodos de grande quantidade de pacientes.
-
-Filas grandes e dificuldades na organização dos atendimentos podem aumentar o tempo de espera e dificultar o trabalho dos profissionais. Além disso, pacientes que precisam de atendimento mais rápido podem ter que esperar junto com outros casos menos urgentes quando não existe uma boa organização da fila.
-
-Dessa forma, o sistema proposto busca auxiliar na organização dos pacientes e das informações dos atendimentos, facilitando o trabalho dos profissionais responsáveis pela recepção, triagem e atendimento médico.
-
-A proposta também pode ser útil em locais que possuem uma estrutura menor e uma quantidade reduzida de profissionais, ajudando na organização dos atendimentos e no melhor aproveitamento dos recursos disponíveis.
-
-## 3. OBJETIVOS
-
-### 3.1 Identificação do paciente (cadastro e seleção)
-
-Permitir que o sistema identifique os pacientes que serão atendidos no pronto-socorro, mantendo suas informações pessoais associadas aos respectivos atendimentos.
-
-O sistema deverá permitir o cadastro de pacientes na recepção, utilizando seus dados pessoais para identificação. Após o cadastro, deverá ser possível selecionar o paciente para registrar um novo atendimento, gerando um número identificador único para esse atendimento.
-
-O sistema também deverá permitir a consulta, alteração e cancelamento de atendimentos, desde que estes ainda não tenham sido confirmados pelo médico.
-
-Os dados mínimos necessários para o cadastro do paciente são:
-
-- Nome completo do paciente (obrigatório);
-- Endereço;
-- RG;
-- CPF;
-- Nome do pai;
-- Nome da mãe;
-- Data de nascimento.
-
-Outros dados pessoais poderão ser incluídos conforme a necessidade do sistema.
-
-O sistema deverá validar os campos obrigatórios durante o cadastro, gerar um identificador para cada paciente cadastrado e um número único para cada atendimento, seguindo o padrão definido pela equipe (ex.: AT0001).
-
-Também deverá permitir a seleção de pacientes cadastrados para a criação de novos atendimentos, garantindo que cada atendimento esteja associado a um paciente existente. As alterações e os cancelamentos poderão ser realizados enquanto não houver confirmação médica.
-
-Como resultado, espera-se que o paciente seja cadastrado e armazenado no banco de dados, que o número de atendimento seja gerado automaticamente e que suas informações estejam disponíveis para consulta pela recepção.
-
-O cadastro deverá permitir a inclusão dos dados pessoais do paciente, gerar identificadores únicos, associar corretamente os pacientes aos seus respectivos atendimentos e armazenar as informações no banco de dados.
-
-Além disso, deverá permitir consultar, alterar e cancelar atendimentos conforme as regras definidas.
-
-### 3.2 Objetivos específicos
-
-- Cadastrar os pacientes;
-- Gerar um número para cada atendimento;
-- Registrar as informações da triagem;
-- Classificar os pacientes de acordo com a prioridade;
-- Organizar a fila de atendimento;
-- Facilitar a visualização dos pacientes pelos médicos;
-- Registrar as informações do atendimento médico;
-- Auxiliar no controle dos atendimentos.
-
-## 4. ESCOPO
-
-O sistema será desenvolvido para auxiliar na organização dos atendimentos de um pronto-socorro.
-
-O processo será dividido em três etapas principais: recepção, triagem e atendimento médico.
-
-Na recepção, serão cadastrados os dados pessoais do paciente e será gerado um número de atendimento. Também será possível consultar, alterar ou cancelar um atendimento quando necessário.
-
-Na triagem, serão registradas informações como pressão arterial, temperatura corporal, batimentos cardíacos e as principais queixas do paciente. Nessa etapa também será realizada a classificação do atendimento.
-
-Após a triagem, o paciente ficará disponível para o atendimento médico. O médico poderá visualizar os pacientes que estão aguardando e acessar as informações do atendimento.
-
-Os principais usuários do sistema serão os profissionais responsáveis pela recepção, triagem e atendimento médico.
-
-Os principais dados utilizados pelo sistema serão os dados dos pacientes, informações da triagem, classificação do atendimento e informações registradas pelo médico.
-
-## 5. REQUISITOS FUNCIONAIS
-
-Os requisitos funcionais representam as principais funções que o sistema deverá realizar.
-
-### 5.1 Identificação de usuário (cadastro e seleção)
-
-**Objetivo:** permitir que o sistema identifique os profissionais responsáveis pelas etapas de recepção, triagem e atendimento médico.
-
-**Descrição:** o sistema deve permitir o cadastro e a autenticação dos profissionais. Cada usuário deve possuir um perfil de acesso — recepção, enfermagem ou médico — que define qual interface e quais funções podem ser utilizadas.
-
-**Entradas mínimas:**
-
-- Nome;
-- CPF;
-- telefone;
-- e-mail, quando informado;
-- login;
-- senha;
-- perfil de acesso.
-
-**Processamento e regras:**
-
-- Gerar um identificador numérico para cada usuário;
-- garantir que CPF e login sejam únicos;
-- validar os campos obrigatórios;
-- armazenar a senha de forma segura, utilizando hash bcrypt;
-- permitir apenas os perfis recepção, enfermagem ou médico;
-- controlar se o usuário está ativo;
-- restringir o acesso às funções correspondentes ao perfil do usuário.
-
-**Saídas e resultado esperado:**
-
-- Usuário cadastrado e armazenado no banco de dados;
-- autenticação realizada por login e senha;
-- acesso direcionado à interface correspondente ao perfil do profissional.
-
-**Critérios de aceite:**
-
-- Permitir cadastrar o profissional e persistir os dados no MySQL;
-- impedir o cadastro de CPF ou login já existente;
-- validar os campos obrigatórios;
-- autenticar somente usuários ativos com credenciais válidas;
-- impedir que o usuário acesse funções de outro perfil.
-
-| Identificador | Nome | Descrição |
-|---|---|---|
-| RF01 | Cadastrar paciente | Permitir o cadastro dos dados pessoais do paciente. |
-| RF02 | Criar atendimento | Gerar um número para cada atendimento. |
-| RF03 | Consultar atendimento | Permitir visualizar as informações de um atendimento. |
-| RF04 | Alterar atendimento | Permitir alterações no atendimento enquanto ele não estiver confirmado pelo médico. |
-| RF05 | Cancelar atendimento | Permitir cancelar um atendimento quando necessário. |
-| RF06 | Registrar triagem | Registrar as informações coletadas durante a triagem. |
-| RF07 | Registrar sinais vitais | Registrar pressão, temperatura e batimentos cardíacos. |
-| RF08 | Registrar queixas | Registrar as principais queixas apresentadas pelo paciente. |
-| RF09 | Classificar atendimento | Registrar a classificação do paciente durante a triagem. |
-| RF10 | Visualizar fila | Mostrar os pacientes que estão aguardando atendimento. |
-| RF11 | Organizar prioridade | Organizar os atendimentos de acordo com sua classificação. |
-| RF12 | Acessar atendimento | Permitir que o médico acesse as informações do paciente. |
-| RF13 | Registrar medicações | Permitir que o médico registre as medicações utilizadas no atendimento. |
-| RF14 | Confirmar atendimento | Permitir que o médico confirme o atendimento realizado. |
-| RF15 | Painel de atendimento | Mostrar a sequência dos pacientes que aguardam atendimento. |
-
-## 6. REQUISITOS NÃO FUNCIONAIS
-
-Os requisitos não funcionais estão relacionados às características que o sistema deverá apresentar.
-
-- **Facilidade de uso:** o sistema deverá possuir uma interface simples para facilitar sua utilização pelos profissionais.
-- **Segurança:** os dados dos pacientes deverão ser protegidos contra acessos não autorizados.
-- **Desempenho:** as informações deverão ser carregadas de forma rápida durante a utilização do sistema.
-- **Organização:** as informações deverão ser apresentadas de forma clara e organizada.
-- **Confiabilidade:** os dados cadastrados deverão ser armazenados corretamente.
-- **Manutenção:** o sistema deverá permitir futuras alterações e melhorias.
-- **Banco de dados:** as informações do sistema deverão ser armazenadas em um banco de dados.
-
-## 7. METODOLOGIA APLICADA AO PROJETO
-
-O projeto está sendo desenvolvido utilizando a metodologia PBL (Aprendizagem Baseada em Projetos), proposta na disciplina de Projeto Integrador 2.
-
-O desenvolvimento começou com a apresentação do tema e a definição do problema que deveria ser trabalhado. Após isso, foram levantadas informações sobre o funcionamento de um pronto-socorro e sobre as principais etapas do atendimento.
-
-Em seguida, foram definidas as principais funções que o sistema deverá possuir e começou o desenvolvimento do banco de dados e das primeiras partes do sistema.
-
-Durante o desenvolvimento, a equipe realiza reuniões, pesquisas, programação e testes. As atividades também são revisadas para que possíveis problemas possam ser corrigidos.
-
-Como o projeto ainda está no início, algumas partes ainda estão sendo desenvolvidas e poderão sofrer alterações durante as próximas etapas.
-
-## 8. CRONOGRAMA EXECUTADO
-
-O cronograma apresenta as atividades realizadas durante o desenvolvimento do projeto, juntamente com os integrantes responsáveis, as datas e o tempo utilizado.
-
-As principais atividades realizadas até o momento envolvem a definição do sistema, pesquisas sobre o tema, levantamento das funções, desenvolvimento do banco de dados e início da programação, todas as informações estão atualizadas no trello.
-
-## 9. MODELAGEM DO BANCO DE DADOS
-
-O banco de dados será utilizado para armazenar as principais informações necessárias para o funcionamento do sistema.
-
-Entre essas informações estão os dados dos pacientes, médicos e atendimentos. A organização do banco permite relacionar essas informações para que possam ser utilizadas durante as diferentes etapas do atendimento.
-
-**Figura 1 – Modelagem do banco de dados do Sistema de Atendimento de Pronto Socorro.**
-
-## 10. PROTÓTIPOS
-
-As telas do sistema ainda estão em desenvolvimento. Até o momento, foram criadas algumas amostras iniciais que servem como base para o desenvolvimento da interface.
-
-Entre as telas previstas estão as de cadastro do paciente, triagem, fila de atendimento e atendimento médico.
-
-Como o projeto ainda não está concluído, os protótipos poderão ser modificados conforme o desenvolvimento do sistema.
-
-## 11. TECNOLOGIAS UTILIZADAS
-
-Para o desenvolvimento do Sistema de Atendimento de Pronto-Socorro, foram utilizadas tecnologias voltadas à construção de aplicações web, ao processamento das informações, ao armazenamento de dados e ao gerenciamento do projeto.
-
-As principais tecnologias utilizadas foram:
-
-**Front-End**
-
-- **HTML:** utilizado para estruturar os elementos das páginas do sistema.
-- **CSS:** utilizado para definir a aparência visual, a organização e a formatação das interfaces.
-- **JavaScript:** utilizado para adicionar interatividade às páginas e permitir a execução de funcionalidades no navegador.
-
-**Back-End**
-
-O Back-End é responsável por processar as operações realizadas nas interfaces, validar as informações e garantir que os dados sejam armazenados e consultados corretamente.
-
-**Banco de dados**
-
-- **MySQL:** utilizado para armazenar e organizar as informações dos pacientes, usuários e atendimentos, permitindo o relacionamento entre os dados necessários ao funcionamento do sistema.
-
-**Ferramentas de desenvolvimento e gerenciamento**
-
-- **GitHub:** utilizado para armazenar o código-fonte, controlar as versões do projeto e acompanhar as alterações realizadas pelos integrantes da equipe.
-- **Trello:** utilizado para organizar e acompanhar as atividades do projeto, permitindo a visualização das tarefas em andamento e concluídas.
-
-A utilização dessas tecnologias contribui para a organização do desenvolvimento, a manutenção do sistema e o gerenciamento das informações relacionadas aos atendimentos do pronto-socorro.
-
-## 12. CONCLUSÃO
-
-O projeto ainda está em sua fase inicial de desenvolvimento, portanto não é possível apresentar uma conclusão definitiva sobre todos os resultados.
-
-Até o momento, foram definidas as principais etapas do sistema, suas funções e a estrutura inicial do banco de dados. Também foi iniciado o desenvolvimento das primeiras partes do sistema.
-
-A proposta é que, ao final do desenvolvimento, o sistema consiga auxiliar na organização dos pacientes, facilitar a visualização da fila e ajudar os profissionais durante o processo de atendimento.
-
-As próximas etapas serão importantes para finalizar as funcionalidades, realizar testes e verificar se o sistema atende aos objetivos definidos no projeto.
-
-### 12.1 RESULTADOS OBTIDOS
-
-Até o momento, foram obtidos os seguintes resultados:
-
-- Definição do funcionamento básico do sistema;
-- Identificação das principais etapas do atendimento;
-- Início do desenvolvimento do banco de dados;
-- Início da programação do sistema;
-- Criação de algumas amostras das telas;
-- Organização das atividades da equipe.
-
-Como o sistema ainda está sendo desenvolvido, novos resultados serão apresentados conforme o projeto avançar.
-
-### 12.2 SUGESTÕES DE MELHORIAS
-
-## REFERÊNCIAS
+Documento de Visão – Sistema de Atendimento de Pronto Socorro
+
+Sistema de Atendimento de Pronto Socorro (SAPS)
+Projeto Integrador II – PUC-Campinas
+Curso: Sistemas de Informação
+Equipe: 
+
+- João Guilherme Amadei Simão
+- Otávio Felix Da Silva
+- Jonathan Ribeiro
+-Felipe Veríssimo Oliveira 
+-Leonardo Henrique dos Santos
+
+1. O que é este documento
+Este documento descreve  o escopo e os requisitos do Sistema de Atendimento de Pronto Socorro (SAPS). Ele orienta o planejamento e a implementação do sistema, e padroniza as entregas
+1.1 Público-alvo
+• Integrantes da equipe de desenvolvimento do projeto.
+• Docente responsável pela orientação e avaliação do Projeto Integrador II.
+• Coordenação do curso de Sistemas de Informação, para acompanhamento do projeto.
+1.2 Autoria e responsabilidade
+Este documento foi elaborado pela equipe do projeto, com base no modelo de Documento fornecido pela disciplina. A equipe é responsável por seguir as especificações, registrar decisões no repositório e manter evidências da evolução do projeto.
+1.3 Procedimento em caso de dúvidas ou inconsistências
+
+• Em caso de inconsistência entre este documento e orientações posteriores do docente, prevalecem as orientações registradas por escrito (AVA, e-mail institucional ou Issue no repositório).
+1.4 Direitos autorais e uso
+Este documento é de uso acadêmico. O código-fonte produzido pela equipe deve respeitar boas práticas de autoria (commits identificáveis) e não deve violar licenças de terceiros. Os dados de pacientes usados em testes devem ser fictícios.
+2. Descrição do Projeto
+2.1 Contextualização
+Hospitais e prontos-socorros recebem grande quantidade de pacientes diariamente. Com a alta demanda surgem filas, demora no atendimento e dificuldade para organizar os pacientes conforme a necessidade de cada caso.
+Seguir apenas a ordem de chegada não é suficiente, pois alguns pacientes precisam de atendimento prioritário. Sem uma boa organização da fila, casos urgentes podem esperar junto com casos menos graves, e as informações ficam espalhadas entre recepção, triagem e médico.
+Para resolver o problema, propõe-se um sistema web que acompanhe o paciente desde a chegada à recepção, passando pela triagem e classificação de risco, até o atendimento médico. A solução também atende unidades menores, com poucos profissionais, ajudando no aproveitamento dos recursos disponíveis.
+2.2 Objetivo do sistema
+• Controlar o acesso dos profissionais por perfil (recepção, enfermagem, médico).
+• Cadastrar pacientes e abrir atendimentos com número único (ex.: AT0001).
+• Registrar a triagem: pressão arterial, temperatura, batimentos cardíacos e queixas.
+• Classificar o atendimento pelo Protocolo de Manchester, em cinco níveis (ver Seção 3.4).
+• Exibir ao médico os pacientes triados, ordenados por prioridade e chegada.
+• Registrar o diagnóstico e a receita (medicações) e finalizar o atendimento.
+2.3 Escopo geral
+O sistema deverá executar, no mínimo, as funcionalidades descritas na Seção 3 (Requisitos). O processo é dividido em três etapas: recepção, triagem e atendimento médico.
+A interface é web (HTML, CSS e JavaScript), servida pelo próprio servidor Node.js e acessada pelo navegador em http://localhost:3000. Há uma tela para cada perfil de acesso. Os dados são armazenados em MySQL.
+2.4 Fora de escopo
+• Cadastro e manutenção de profissionais pela interface: nesta versão os profissionais são cadastrados pelo script SQL.
+• Painel público de chamada para os pacientes (TV na sala de espera).
+• Prontuário eletrônico completo, prescrição estruturada e assinatura digital.
+• Integração com sistemas externos (SUS, convênios, laboratórios, farmácia).
+• Agendamento, internação, faturamento e controle de estoque de medicamentos.
+• Autenticação avançada (2FA, OAuth) e deploy em nuvem.
+2.5 Visão de uso (fluxo macro)
+1.  Profissional faz login com CPF e senha e é direcionado à tela do seu perfil.
+2.  Recepção preenche os dados do paciente; o sistema cadastra o paciente (ou reaproveita o cadastro pelo CPF) e abre o atendimento AT0001 com status "aberto".
+3.  O paciente aparece na fila da triagem, por ordem de chegada.
+4.  Enfermagem registra pressão, temperatura, batimentos, queixas e a classificação de 1 a 5; o status passa para "triado".
+5.  O paciente aparece no painel do médico, ordenado por classificação e chegada.
+6.  Médico abre o atendimento, vê a triagem, escreve o diagnóstico e a receita e finaliza; o status passa para "atendido".
+7.  Enquanto o status for "aberto" ou "triado", a recepção pode alterar os dados ou cancelar o atendimento.
+3. Requisitos
+Os requisitos a seguir estão organizados por módulos funcionais, seguindo o padrão do Projeto Integrador. A tabela relaciona cada módulo aos requisitos funcionais (RF) que ele atende.
+Módulo
+Requisitos funcionais
+3.1 Identificação de usuário
+RF16 Autenticar profissional
+3.2 Cadastro de paciente e abertura de atendimento
+RF01 Cadastrar paciente, RF02 Criar atendimento
+3.3 Consulta, alteração e cancelamento
+RF03 Consultar, RF04 Alterar, RF05 Cancelar atendimento
+3.4 Triagem e classificação
+RF06 Registrar triagem, RF07 Sinais vitais, RF08 Queixas, RF09 Classificar
+3.5 Painel do médico
+RF10 Visualizar fila, RF11 Organizar prioridade, RF15 Painel de atendimento
+3.6 Atendimento médico
+RF12 Acessar atendimento, RF13 Registrar medicações, RF14 Confirmar atendimento
+3.1 Identificação de usuário (autenticação e controle de acesso)
+Objetivo: identificar os profissionais responsáveis pelas etapas de recepção, triagem e atendimento médico.
+Descrição: os profissionais são cadastrados pelo script SQL e entram no sistema com CPF e senha. Cada usuário tem um perfil — recepção, enfermagem ou médico — que define qual tela e quais rotas pode usar.
+Entradas mínimas:
+• Cadastro (script SQL): nome, CPF, telefone, e-mail , login, senha, perfil.
+• Login (tela): CPF e senha.
+Processamento / Regras:
+• Gerar identificador numérico (id_usuario) para cada usuário.
+• CPF e login são únicos; o login é o próprio CPF.
+• Perfil restrito a recepcao, enfermagem ou medico (CHECK no banco).
+• Só usuário ativo consegue entrar.
+• CPF inexistente e senha errada dão a mesma mensagem, para não revelar quais CPFs existem.
+• O servidor guarda o usuário numa sessão (express-session, cookie httpOnly). Sem login a rota responde 401; com perfil errado, 403.
+• Quem abriu, triou ou atendeu é gravado a partir da sessão, nunca de um dado enviado pela tela.
+• Sair apaga a sessão; reiniciar o servidor desloga todos.
+Saídas / Resultado esperado:
+• Autenticação por CPF e senha.
+• Acesso direcionado à tela do perfil do profissional.
+Critérios de aceite:
+• Autentica somente usuários ativos com credenciais válidas.
+• Impede que um perfil use as rotas de outro, mesmo chamando a rota diretamente.
+• O banco não guarda nenhuma senha em texto puro.
+3.2 Cadastro de paciente e abertura de atendimento
+Objetivo: identificar o paciente e registrar cada vez que ele procura o pronto-socorro.
+Descrição: a recepção preenche os dados do paciente e abre o atendimento na mesma ação. Se o CPF já tem cadastro, o paciente é reaproveitado e só um novo atendimento é aberto.
+Entradas mínimas:
+• Nome completo, data de nascimento e sexo (obrigatórios);
+• CPF (só números, 11 dígitos) ou RG — ao menos um;
+• Nome do pai e nome da mãe (ao menos um, se o paciente tiver menos de 18 anos);
+• Telefone e endereço (opcionais).
+Processamento / Regras:
+• Gerar identificador numérico (id_paciente) para cada paciente.
+• CPF e RG são únicos; o banco exige ao menos um deles (CHECK).
+• Sexo aceita M ou F.
+• A idade é calculada pela data de nascimento; menor de 18 anos sem pai ou mãe é recusado.
+• CPF já cadastrado com dados diferentes: o sistema lista as diferenças e pede para usar "Alterar" ou corrigir.
+• Um paciente só pode ter um atendimento em andamento (aberto ou triado) por vez.
+• O atendimento começa com status "aberto" e data/hora de entrada automática.
+• O número exibido é AT + id_atendimento com 4 dígitos (id 7 → AT0007); ele é montado pelo servidor e não fica gravado no banco.
+Saídas / Resultado esperado:
+• Paciente e atendimento persistidos no MySQL.
+• Mensagem de confirmação com o número do atendimento.
+Critérios de aceite:
+• Recusa paciente sem CPF e sem RG, ou menor sem responsável, com mensagem clara.
+• Reaproveita o cadastro pelo CPF sem duplicar o paciente.
+• Impede dois atendimentos em andamento para o mesmo paciente.
+3.3 Consulta, alteração e cancelamento de atendimento
+Objetivo: permitir à recepção localizar, corrigir ou cancelar atendimentos sem perder a integridade dos registros.
+Descrição: a recepção busca o atendimento pelo número ou pelo CPF do paciente e pode alterar os dados do paciente ou cancelar o atendimento enquanto o médico não finalizou.
+Entradas mínimas:
+• Busca: número do atendimento (AT0001) ou CPF;
+• Alteração: os dados do paciente.
+Processamento / Regras:
+• Busca começada por "AT" procura pelo número; senão, pelo CPF. Os resultados vêm do mais novo para o mais antigo.
+• A alteração repete as validações do cadastro (Seção 3.2).
+• Atendimento "atendido" ou "cancelado" não pode ser alterado.
+• Pode cancelar atendimento "aberto" ou "triado"; "atendido" não pode ser cancelado.
+• Cancelar não apaga o registro: só muda o status para "cancelado". O atendimento cancelado não volta.
+Status do atendimento:
+Status
+Quem muda
+Significado
+aberto
+recepção
+paciente esperando a triagem
+triado
+enfermagem
+paciente esperando o médico
+atendido
+médico
+atendimento finalizado, vira histórico
+cancelado
+recepção
+só antes de o médico finalizar
+Critérios de aceite:
+• Busca por número e por CPF retorna os dados do atendimento e do paciente.
+• Bloqueia alteração e cancelamento de atendimento finalizado, com mensagem clara.
+• Atendimento cancelado sai da fila da triagem e do painel do médico.
+3.4 Triagem e classificação de risco
+Objetivo: registrar o estado do paciente na chegada e definir a prioridade do atendimento.
+Descrição: a enfermagem vê a fila dos atendimentos "aberto", por ordem de chegada, seleciona um paciente e registra sinais vitais, queixas e a classificação pelo Protocolo de Manchester.
+Entradas mínimas:
+• Pressão arterial;
+• Temperatura corporal (°C);
+• Batimentos cardíacos ;
+• Queixas ;
+• Classificação de 1 a 5 ;
+Processamento / Regras:
+• Todos os campos são obrigatórios.
+• Faixas aceitas: temperatura de 30,0 a 45,0 °C e batimentos de 0 a 300 bpm (garantidas pela tela e por CHECK no banco); pressão com 2 ou 3 dígitos de cada lado da barra (conferida no back-end).
+• Só é possível triar atendimento com status "aberto".
+• Cada atendimento tem no máximo uma triagem (UNIQUE no banco); se duas enfermeiras salvarem juntas, só a primeira grava.
+• O enfermeiro responsável e a data/hora são gravados automaticamente.
+• Ao salvar, o status muda para "triado" e o paciente sai da fila da triagem.
+Classificação (Protocolo de Manchester):
+Valor
+Cor
+Urgência
+1
+Vermelho
+emergência
+2
+Laranja
+muito urgente
+3
+Amarelo
+urgente
+4
+Verde
+pouco urgente
+5
+Azul
+não urgente
+Saídas / Resultado esperado:
+• Triagem persistida no banco, associada ao atendimento.
+• Paciente incluído no painel do médico.
+Critérios de aceite:
+• Registra a triagem com os valores dentro das faixas.
+• Rejeita campo vazio ou pressão fora do formato, com mensagem clara.
+• Não permite triar o mesmo atendimento duas vezes.
+3.5 Painel do médico (fila de atendimento)
+Objetivo: mostrar ao médico a sequência dos pacientes que aguardam atendimento.
+Descrição: o painel lista os atendimentos "triado" na ordem em que devem ser atendidos.
+Processamento / Regras:
+• Ordenação determinística: primeiro pela classificação (1 antes de 5) e, no empate, pela data/hora de entrada.
+• Cada linha mostra a cor da classificação, o número do atendimento, o nome, a idade e as queixas, com o botão "Chamar".
+• Ao chamar, o médico vê pressão, temperatura, batimentos e queixas da triagem.
+• No topo, dois contadores: total de pacientes aguardando e casos graves (vermelho + laranja).
+• O painel recarrega sozinho a cada 30 segundos e tem o botão "Atualizar".
+• Atendimentos atendidos ou cancelados não aparecem.
+Critérios de aceite:
+• Paciente vermelho aparece antes de qualquer amarelo, mesmo tendo chegado depois.
+• Com a mesma cor, quem chegou primeiro aparece primeiro.
+• Painel reflete os dados atuais do banco.
+3.6 Atendimento médico
+Objetivo: permitir que o médico atenda o paciente com acesso às informações da recepção e da triagem.
+Descrição: o médico abre um atendimento do painel, vê os dados e a triagem, escreve o diagnóstico e a receita e finaliza.
+Entradas mínimas:
+• Diagnóstico (obrigatório, até 300 caracteres);
+• Receita: texto livre com as medicações (opcional).
+Processamento / Regras:
+• Só é possível finalizar atendimento com status "triado".
+• Ao finalizar, o sistema grava o médico (da sessão), o diagnóstico, a receita e a data/hora, e muda o status para "atendido".
+• Se dois médicos finalizarem o mesmo paciente ao mesmo tempo, só o primeiro grava.
+• Atendimento cancelado pela recepção enquanto aberto na tela é recusado com aviso.
+• Depois de "atendido", o atendimento não pode ser alterado nem cancelado e passa a ser histórico.
+Saídas / Resultado esperado:
+• Diagnóstico e receita persistidos no atendimento.
+• Paciente removido do painel.
+Critérios de aceite:
+• Médico visualiza paciente e triagem do atendimento selecionado.
+• Não finaliza sem diagnóstico.
+• Finalização bloqueia alteração e cancelamento na recepção.
+3.7 Persistência de dados e banco de dados
+Objetivo: garantir que os dados permaneçam armazenados entre execuções.
+Descrição: todos os registros são persistidos no banco MySQL pronto_socorro, com quatro tabelas relacionadas. O DER está no MER.md e no README.
+Tabela
+Principais atributos
+Relacionamento
+usuario
+id_usuario, nome, cpf, telefone, email, login, senha_hash, perfil, ativo
+abre atendimentos (recepção), faz triagens (enfermagem), atende (médico)
+paciente
+id_paciente, nome_completo, cpf, rg, data_nascimento, sexo, telefone, endereco, nome_pai, nome_mae
+1 paciente : N atendimentos
+atendimento
+id_atendimento, id_paciente, status, id_recepcionista, data_hora_entrada, id_medico, data_hora_atendimento, diagnostico, receita
+1 atendimento : 0..1 triagem
+triagem
+id_triagem, id_atendimento, id_enfermeiro, data_hora, pressao_arterial, temperatura, batimentos_cardiacos, queixas, classificacao
+pertence a 1 atendimento
+Regras:
+• Chaves estrangeiras impedem registros órfãos: não existe atendimento sem paciente, nem triagem sem atendimento.
+• Restrições CHECK: perfil, status, sexo, CPF ou RG no paciente, temperatura, batimentos e classificação.
+• O histórico não é uma tabela separada: são os atendimentos com status "atendido".
+• A receita é um texto livre no próprio atendimento, uma por atendimento.
+• O script bd/create_table.sql apaga e recria o banco e insere 45 profissionais de teste (15 por perfil), só com o hash das senhas.
+Critérios de aceite:
+• Banco é criado com sucesso a partir do script SQL (MySQL 8.0.16 ou superior).
+• Dados continuam disponíveis após reiniciar o sistema.
+• Integridade referencial é respeitada.
+3.8 Interface do sistema
+Obrigatória: interface web acessada pelo navegador em http://localhost:3000.
+Descrição: a tela de login direciona cada profissional para a tela do seu perfil. Cada tela chama apenas as rotas do seu perfil.
+Tela
+O que faz
+Rotas
+login.html
+entrar e sair
+POST /login, POST /logout
+recepcao.html
+abrir, buscar, alterar e cancelar atendimento
+POST /atendimentos, GET /atendimentos?busca=, PUT /atendimentos/:id, PATCH /atendimentos/:id/cancelar
+triagem.html
+fila da triagem e registro da triagem
+GET /triagem/fila, POST /atendimentos/:id/triagem
+medico.html
+painel e finalização do atendimento
+GET /painel, PATCH /atendimentos/:id/finalizar
+Critérios de aceite:
+• Todas as funções obrigatórias são acessíveis pela tela do perfil correto.
+• Mensagens são claras e orientam o usuário em caso de erro.
+• README explica como executar o sistema.
+4. Requisitos não funcionais
+4.1 Qualidade de código e organização
+• O projeto deve ser organizado em camadas e pastas separadas (front-end, back-end, scripts SQL).
+• Deve haver uso de funções e módulos reutilizáveis, evitando código repetido.
+• O código deve ser legível e comentado quando necessário.
+• O repositório deve conter um README com instruções de execução e estrutura do projeto.
+4.2 Segurança e privacidade
+• Senhas armazenadas somente com hash bcrypt (bcryptjs).
+• Todas as rotas, exceto o login, exigem sessão ativa; o cookie da sessão é httpOnly e sameSite strict.
+• Cada perfil acessa apenas as próprias rotas; a verificação é feita no back-end (401 sem login, 403 com perfil errado).
+• Consultas ao banco usam parâmetros (?) do mysql2 para evitar SQL Injection.
+• A senha do banco fica no arquivo .env, fora do GitHub.
+4.3 Confiabilidade e validação
+• O sistema deve tratar entradas inválidas sem travar ou perder dados.
+• Mensagens de erro devem orientar o usuário a corrigir a entrada.
+• Dados obrigatórios não podem ser omitidos.
+• As regras de negócio são conferidas no back-end; as faixas de valores também são garantidas por restrições CHECK no banco. A validação da tela só adianta o aviso.
+• Botões de salvar ficam desligados enquanto o servidor responde, para não gravar duas vezes.
+4.4 Usabilidade e desempenho
+• Interface simples, com uma tela por perfil e apenas as ações daquele perfil.
+• Status e classificação aparecem como etiquetas coloridas.
+• Sessão expirada leva de volta ao login em vez de mostrar erro.
+4.5 Portabilidade
+• O sistema executa em Windows, Linux ou macOS, com Node.js e MySQL instalados.
+• A interface roda em qualquer navegador atual, sem instalação.
+5. Ambiente e ferramentas
+5.1 Linguagens e versões
+• Front-end: HTML5, CSS3 e JavaScript.
+• Back-end: Node.js 20.12 ou superior (o servidor usa process.loadEnvFile) com Express 5.
+• Banco de dados: MySQL 8.0.16 ou superior (necessário para as restrições CHECK).
+5.2 Bibliotecas permitidas
+• express: servidor e rotas.
+• mysql2: conexão com o MySQL.
+• bcryptjs: hash das senhas.
+• express-session: sessão do usuário logado.
+5.3 Ferramentas de desenvolvimento
+• Git e GitHub (repositório obrigatório).
+• Trello (quadro Kanban para planejamento e acompanhamento).
+• MySQL Workbench (modelagem e scripts SQL).
+• Editor/IDE: VS Code ou equivalente.
+6. Regras do projeto
+6.1 Repositório GitHub
+• A equipe mantém um repositório no GitHub com o nome definido pelo docente.
+• O repositório contém código-fonte, scripts SQL, README e este documento.
+• Todos os integrantes devem ter commits no histórico.
+6.2 Branches e merges
+• A branch principal é a main.
+• Cada funcionalidade é desenvolvida em branch própria (ex.: feature/triagem, feature/fila-medica).
+• Antes de mesclar na main, o sistema deve executar: abrir a tela de login e conectar ao banco.
+6.3 Padrão mínimo de commits
+• Mensagens claras (ex.: "Implementa registro de triagem").
+• Commits autorais de cada integrante ao longo do desenvolvimento, evitando um commit único no final.
+6.4 Trello e organização
+• O quadro no Trello tem as colunas Backlog, Em andamento, Em revisão e Concluído.
+• Cada requisito funcional (RF01 a RF16) é representado por um ou mais cartões.
+• Os cartões indicam responsável, prazo e status.
+6.5 Documentação obrigatória (README)
+• Descrição e objetivo do projeto.
+• Regra de classificação de prioridade e decisões de modelagem (resumo).
+• Requisitos de instalação (MySQL e ambiente do back-end).
+• Passo a passo de execução, incluindo a criação do banco e os usuários de teste de cada perfil.
+• Estrutura de pastas e arquivos.
+• Integrantes da equipe.
+6.6 Entregas e versionamento (TAG)
+• A entrega final é marcada com uma TAG no GitHub (ex.: v1.0).
+• A TAG aponta para um commit que executa corretamente e contém toda a documentação.
+6.7 Apresentação do projeto
+• Demonstração do fluxo principal: login → cadastro do paciente → abertura do atendimento → triagem e classificação → painel do médico → diagnóstico e receita → finalização.
+• Explicação breve da modelagem (entidades e relacionamentos) e da regra de prioridade.
+• Demonstração do repositório: README, histórico de commits, quadro do Trello e TAG final.
+7. Entregas e marcos
+Os prazos específicos são informados pelo docente. O andamento detalhado de cada atividade está no Trello.
+1.  Etapa 1 – Planejamento: entendimento do problema, fluxo de atendimento, regra de classificação e quadro no Trello.
+2.  Etapa 2 – Base do sistema: modelagem e criação do banco, conexão Node.js–MySQL e login por perfil.
+3.  Etapa 3 – Fluxo de atendimento: recepção, triagem e classificação, painel do médico e finalização.
+4.  Etapa 4 – Finalização: testes, revisão do README, scripts SQL e TAG final.
+5.  Etapa 5 – Apresentação: demonstração do sistema e entrega final.
+8. Critérios mínimos de aceite do produto
+• Sistema web executa com login por CPF e direcionamento por perfil (recepção, enfermagem, médico).
+• Senhas guardadas só com hash bcrypt; rotas protegidas por perfil no back-end.
+• Cadastro de paciente com CPF ou RG, regra do responsável para menores e reaproveitamento pelo CPF.
+• Abertura de atendimento com número AT0001 e no máximo um atendimento em andamento por paciente.
+• Alteração e cancelamento bloqueados depois que o médico finaliza.
+• Triagem com sinais vitais validados e classificação de Manchester em cinco níveis.
+• Painel do médico ordenado por classificação e horário de chegada.
+• Finalização com diagnóstico obrigatório e receita.
+• README completo com instruções e decisões (classificação e modelagem).
+• Script SQL entregue e funcional.
+• Repositório com histórico de commits da equipe, quadro no Trello e TAG final.
