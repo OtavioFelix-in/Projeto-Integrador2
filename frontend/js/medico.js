@@ -2,7 +2,7 @@
 const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 
 // sem login ou com outro perfil, volta pro login
-if (!usuario || usuario.perfil !== 'medico') {
+if (!usuario || (usuario.perfil !== 'medico' && usuario.perfil !== 'admin')) {
   window.location.replace('login.html');
   throw new Error('sem login'); // para o resto do código
 }
@@ -16,6 +16,10 @@ window.addEventListener('pageshow', (evento) => {
 
 // mostra o nome no topo
 document.getElementById('nomeUsuario').textContent = usuario.nome;
+
+// admin só olha o painel: não aparece o botão Chamar
+// (o servidor também não deixa: a rota de finalizar só aceita o médico)
+const somenteVer = usuario.perfil === 'admin';
 
 // botão sair: limpa o login e volta pra tela de entrada
 document.getElementById('sair').addEventListener('click', async () => {
@@ -66,38 +70,57 @@ function celula(tr, texto) {
   return td;
 }
 
-// cartões do topo: quantos esperam e quantos são graves
-function atualizarResumo() {
-  document.getElementById('totalAguardando').textContent = painel.length;
+// cartões do topo: quantos esperam e quantos são graves (recebe a lista do painel inteiro)
+function atualizarResumo(lista) {
+  document.getElementById('totalAguardando').textContent = lista.length;
 
   // filter separa só os que passam na condição
-  const graves = painel.filter(a => a.classificacao <= 2); // vermelho e laranja
+  const graves = lista.filter(a => a.classificacao <= 2); // vermelho e laranja
   document.getElementById('totalGraves').textContent = graves.length;
 }
 
 // busca os triados no servidor e monta a tabela.
-// já vem na ordem certa: o servidor ordena por classificação e depois por chegada
+// já vem na ordem certa: o servidor ordena por classificação e depois por chegada.
+// manda junto o filtro da tela (Buscar por). campo vazio = painel inteiro.
+// como lê o filtro toda vez, a atualização de 30 em 30 segundos continua filtrando
 async function carregarPainel() {
-  const resposta = await pedir('/painel');
+  const tipo = document.getElementById('tipoBusca').value;
+  const busca = document.getElementById('busca').value.trim();
+  const resposta = await pedir('/painel?tipo=' + tipo + '&busca=' + encodeURIComponent(busca));
   const dados = await resposta.json();
 
   // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('painel');
   tbody.innerHTML = '';
 
-  // o servidor deu erro (ex: banco fora do ar): avisa em vez de mostrar o painel vazio
+  // o servidor deu erro (ex: número digitado errado): mostra o motivo dentro da tabela,
+  // que some sozinho quando a busca é corrigida
   if (!resposta.ok) {
     painel = [];
-    atualizarResumo();
-    mostrarMensagem(dados.erro, 'erro');
+    // erro de filtro não zera os cartões (os pacientes continuam lá). sem filtro, o erro é do servidor
+    if (!busca) {
+      atualizarResumo([]);
+    }
+    const tr = document.createElement('tr');
+    celula(tr, dados.erro).colSpan = 6;
+    tbody.appendChild(tr);
     return;
   }
   painel = dados;
-  atualizarResumo();
+
+  // os cartões contam o painel inteiro, mesmo com filtro.
+  // com filtro, pede o painel sem filtro só pra contar
+  if (busca) {
+    const todos = await pedir('/painel').then(r => r.json());
+    atualizarResumo(Array.isArray(todos) ? todos : []);
+  } else {
+    atualizarResumo(painel);
+  }
 
   if (painel.length === 0) {
     const tr = document.createElement('tr');
-    celula(tr, 'Nenhum paciente aguardando.').colSpan = 6;
+    const aviso = busca ? 'Nenhum paciente encontrado com esse filtro.' : 'Nenhum paciente aguardando.';
+    celula(tr, aviso).colSpan = 6;
     tbody.appendChild(tr);
     return;
   }
@@ -117,11 +140,14 @@ async function carregarPainel() {
     celula(tr, a.idade);
     celula(tr, a.queixas);
 
-    const botao = document.createElement('button');
-    botao.className = 'botao';
-    botao.textContent = 'Chamar';
-    botao.addEventListener('click', () => chamar(i));
-    celula(tr, '').appendChild(botao);
+    const acao = celula(tr, '');
+    if (!somenteVer) {
+      const botao = document.createElement('button');
+      botao.className = 'botao';
+      botao.textContent = 'Chamar';
+      botao.addEventListener('click', () => chamar(i));
+      acao.appendChild(botao);
+    }
 
     tbody.appendChild(tr);
   });
@@ -207,8 +233,16 @@ document.getElementById('fechar').addEventListener('click', () => {
   atual = null;
 });
 
-// botão Atualizar, e já carrega o painel quando a tela abre
-document.getElementById('atualizar').addEventListener('click', carregarPainel);
+// Buscar: carrega o painel com o filtro digitado
+document.getElementById('botaoBuscar').addEventListener('click', carregarPainel);
+
+// Ver todos: apaga o filtro e mostra o painel inteiro
+document.getElementById('botaoTodos').addEventListener('click', () => {
+  document.getElementById('busca').value = '';
+  carregarPainel();
+});
+
+// carrega o painel quando a tela abre
 carregarPainel();
 
 // atualiza o painel sozinho a cada 30 segundos, pra emergência nova não ficar esperando um clique

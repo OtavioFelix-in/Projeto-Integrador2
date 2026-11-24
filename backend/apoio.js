@@ -2,7 +2,9 @@
 const banco = require('./banco');
 
 // calcula a idade a partir da data de nascimento ('1990-05-10')
+// sem data (paciente não identificado) devolve null, e a tela mostra vazio
 function idade(dataNascimento) {
+  if (!dataNascimento) return null;
   const [ano, mes, dia] = String(dataNascimento).slice(0, 10).split('-').map(Number);
   const hoje = new Date();
   let anos = hoje.getFullYear() - ano;
@@ -28,6 +30,20 @@ function soNumeros(texto) {
 // regras do paciente, usadas ao abrir e ao alterar
 // devolve a mensagem de erro, ou null se estiver tudo certo
 function validarPaciente(p) {
+  // CPF, quando informado, só com os 11 números (sem ponto e traço), que é como a busca procura
+  if (p.cpf && !/^\d{11}$/.test(p.cpf)) {
+    return 'O CPF precisa ter 11 números, sem ponto e traço.';
+  }
+
+  // não identificado (chegou sem documento e sem conseguir informar): só o sexo é obrigatório.
+  // o atendimento abre na hora e a recepção completa o cadastro depois, pelo Alterar
+  if (p.nao_identificado === true) {
+    if (!p.sexo) {
+      return 'Informe o sexo.';
+    }
+    return null;
+  }
+
   if (!p.nome_completo || !p.data_nascimento || !p.sexo) {
     return 'Preencha nome, data de nascimento e sexo.';
   }
@@ -42,41 +58,71 @@ function validarPaciente(p) {
   return null;
 }
 
-// compara o cadastro do banco com o que a recepção digitou
-// devolve a lista do que está diferente (lista vazia = tudo igual)
-function diferencasPaciente(cadastro, digitado) {
-  // campo do banco -> nome que aparece no aviso
-  const campos = {
-    nome_completo: 'nome',
-    rg: 'RG',
-    data_nascimento: 'data de nascimento',
-    sexo: 'sexo',
-    telefone: 'telefone',
-    nome_pai: 'nome do pai',
-    nome_mae: 'nome da mãe',
-    endereco: 'endereço'
-  };
-
-  const diferencas = [];
-  for (const campo in campos) {
-    const novo = String(digitado[campo] || '').trim();
-    const antigo = String(cadastro[campo] || '').trim();
-
-    // campo em branco na tela não conta: a recepção pode só não ter preenchido
-    if (!novo) continue;
-
-    // compara sem ligar pra maiúscula e minúscula ("otavio" = "OTAVIO")
-    if (novo.toLowerCase() !== antigo.toLowerCase()) {
-      diferencas.push(campos[campo] + ' (cadastro: ' + (antigo || 'vazio') + ', digitado: ' + novo + ')');
-    }
-  }
-  return diferencas;
-}
-
 // busca o atendimento pelo id (devolve undefined se não existir)
 async function buscarAtendimento(id) {
   const [linhas] = await banco.query('SELECT * FROM atendimento WHERE id_atendimento = ?', [id]);
   return linhas[0];
+}
+
+// número do atendimento digitado na busca: '8', '0008' ou 'AT0008' -> 8.
+// qualquer outra coisa (abc, 0, -2, 0.8) devolve null. usado em todas as buscas por número
+function numeroDoAtendimento(texto) {
+  const digitado = String(texto || '').trim();
+  if (!/^(AT)?\d{1,9}$/i.test(digitado)) return null;
+  const id = Number(digitado.replace(/^AT/i, ''));
+  return id === 0 ? null : id;
+}
+
+// confere se a data existe de verdade: '2026-02-30' tem o formato certo mas não existe
+function dataExiste(texto) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(texto)) return false; // formato do campo de data: 2026-11-23
+  const d = new Date(texto + 'T00:00:00Z');
+  // o JS arruma data impossível (30/02 vira 02/03), então se mudou é porque não existia
+  return !isNaN(d) && d.toISOString().slice(0, 10) === texto;
+}
+
+// filtros que as 3 telas de histórico têm em comum: data (de / até) e número do atendimento.
+// devolve os pedaços do WHERE e os valores dos ?, ou { erro } se algum filtro estiver errado.
+// cada rota acrescenta os filtros só dela.
+// colunaData vem do código da rota (nunca da tela), por isso pode ir direto no texto do SQL
+function filtrosHistorico(query, colunaData) {
+  const condicoes = [];
+  const valores = [];
+  // String() garante texto mesmo se o endereço mandar o mesmo parâmetro duas vezes
+  const de = String(query.de || '').trim();
+  const ate = String(query.ate || '').trim();
+  const numero = String(query.numero || '').trim();
+
+  // campo vazio = filtro desligado. campo preenchido errado = erro com mensagem
+  if (de && !dataExiste(de)) {
+    return { erro: 'Data inicial inválida.' };
+  }
+  if (ate && !dataExiste(ate)) {
+    return { erro: 'Data final inválida.' };
+  }
+  if (de && ate && de > ate) {
+    return { erro: 'A data inicial não pode ser depois da data final.' };
+  }
+  if (de) {
+    condicoes.push(colunaData + ' >= ?');
+    valores.push(de);
+  }
+  // "até" pega o dia inteiro: vai até as 23:59:59 daquele dia
+  if (ate) {
+    condicoes.push(colunaData + ' <= ?');
+    valores.push(ate + ' 23:59:59');
+  }
+
+  // número do atendimento: campo preenchido errado é erro
+  if (numero) {
+    const id = numeroDoAtendimento(numero);
+    if (!id) {
+      return { erro: 'Digite só o número do atendimento. Ex: 8' };
+    }
+    condicoes.push('a.id_atendimento = ?');
+    valores.push(id);
+  }
+  return { condicoes, valores };
 }
 
 // resposta padrão quando algo quebra dentro de uma rota
@@ -89,4 +135,4 @@ function erroServidor(res, error) {
   res.status(500).json({ erro: 'Erro no servidor.' });
 }
 
-module.exports = { idade, numeroAtendimento, soNumeros, validarPaciente, diferencasPaciente, buscarAtendimento, erroServidor };
+module.exports = { idade, numeroAtendimento, numeroDoAtendimento, soNumeros, validarPaciente, buscarAtendimento, filtrosHistorico, erroServidor };

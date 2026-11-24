@@ -14,6 +14,7 @@
       <div class="logo">PRONTO<br>SOCORRO</div>
       <nav>
         <a href="medico.html" class="ativo">Painel</a>
+        <a href="historico-medico.html">Histórico</a>
       </nav>
       <button id="sair" class="botao-sair">Sair</button>
     </aside>
@@ -39,11 +40,21 @@
         </section>
 
         <section class="caixa">
-          <div class="cabecalho-caixa">
-            <h2>Pacientes aguardando</h2>
-            <button id="atualizar" class="botao botao-secundario">Atualizar</button>
+          <h2>Pacientes aguardando</h2>
+          <div class="form-linha">
+            <label class="campo-curto">Buscar por
+              <select id="tipoBusca">
+                <option value="numero">Número</option>
+                <option value="nome">Nome</option>
+              </select>
+            </label>
+            <label>
+              <input type="text" id="busca">
+            </label>
+            <button id="botaoBuscar" class="botao">Buscar</button>
+            <button id="botaoTodos" class="botao botao-secundario">Ver todos</button>
           </div>
-          <table class="tabela">
+          <table class="tabela" style="margin-top: 16px;">
             <thead>
               <tr>
                 <th>Classificação</th>
@@ -98,6 +109,7 @@
     </div>
   </div>
 
+  <script src="js/menu-admin.js"></script>
   <script src="js/medico.js"></script>
 </body>
 

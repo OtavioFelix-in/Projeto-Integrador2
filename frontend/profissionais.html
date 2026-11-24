@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pronto Socorro - Profissionais</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">PRONTO<br>SOCORRO</div>
+      <nav>
+        <!-- o menu do admin é montado pelo menu-admin.js -->
+      </nav>
+      <button id="sair" class="botao-sair">Sair</button>
+    </aside>
+
+    <div class="conteudo">
+      <header class="topo">
+        <h1>Profissionais</h1>
+        <span id="nomeUsuario"></span>
+      </header>
+
+      <main>
+        <form id="formProfissional" class="caixa">
+          <h2>Cadastrar profissional</h2>
+
+          <div class="form-linha">
+            <label>Nome
+              <input type="text" id="nome" maxlength="100" required>
+            </label>
+            <label>CPF (só números, é o login)
+              <input type="text" id="cpf" maxlength="11" required>
+            </label>
+          </div>
+          <div class="form-linha">
+            <label>Telefone com DDD
+              <input type="text" id="telefone" maxlength="11" required>
+            </label>
+            <label>E-mail
+              <input type="email" id="email" maxlength="120">
+            </label>
+          </div>
+          <div class="form-linha">
+            <label>Perfil
+              <select id="perfil" required>
+                <option value="">Selecione</option>
+                <option value="recepcao">Recepção</option>
+                <option value="enfermagem">Enfermagem</option>
+                <option value="medico">Médico</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </label>
+            <label>Senha (mínimo 6 caracteres)
+              <input type="password" id="senha" minlength="6" required>
+            </label>
+          </div>
+
+          <div class="acoes">
+            <button type="reset" class="botao botao-secundario">Limpar</button>
+            <button type="submit" class="botao">Cadastrar</button>
+          </div>
+          <p id="mensagem"></p>
+        </form>
+
+        <section class="caixa">
+          <h2>Equipe</h2>
+          <p class="dica">Profissional inativo não consegue entrar no sistema.</p>
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Situação</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="equipe"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/menu-admin.js"></script>
+  <script src="js/profissionais.js"></script>
+</body>
+
+</html>

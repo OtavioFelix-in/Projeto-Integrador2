@@ -2,7 +2,7 @@
 const usuario = JSON.parse(sessionStorage.getItem('usuario'));
 
 // sem login ou com outro perfil, volta pro login
-if (!usuario || usuario.perfil !== 'enfermagem') {
+if (!usuario || (usuario.perfil !== 'enfermagem' && usuario.perfil !== 'admin')) {
   window.location.replace('login.html');
   throw new Error('sem login'); // para o resto do código
 }
@@ -16,6 +16,10 @@ window.addEventListener('pageshow', (evento) => {
 
 // mostra o nome no topo
 document.getElementById('nomeUsuario').textContent = usuario.nome;
+
+// admin só olha a fila: não aparece o botão Fazer triagem
+// (o servidor também não deixa: a rota que grava a triagem só aceita a enfermagem)
+const somenteVer = usuario.perfil === 'admin';
 
 // botão sair: limpa o login e volta pra tela de entrada
 document.getElementById('sair').addEventListener('click', async () => {
@@ -58,26 +62,34 @@ function celula(tr, texto) {
 }
 
 // busca no servidor quem está esperando triagem e monta a tabela.
-// o servidor só devolve atendimentos com status 'aberto', por ordem de chegada
+// o servidor só devolve atendimentos com status 'aberto', primeiro os com alerta e depois por chegada.
+// manda junto o filtro da tela (Buscar por). campo vazio = fila inteira.
+// como lê o filtro toda vez, a atualização de 30 em 30 segundos continua filtrando
 async function carregarFila() {
-  const resposta = await pedir('/triagem/fila');
+  const tipo = document.getElementById('tipoBusca').value;
+  const busca = document.getElementById('busca').value.trim();
+  const resposta = await pedir('/triagem/fila?tipo=' + tipo + '&busca=' + encodeURIComponent(busca));
   const dados = await resposta.json();
 
   // limpa a tabela antes de montar de novo
   const tbody = document.getElementById('fila');
   tbody.innerHTML = '';
 
-  // o servidor deu erro (ex: banco fora do ar): avisa em vez de mostrar a fila vazia
+  // o servidor deu erro (ex: número digitado errado): mostra o motivo dentro da tabela,
+  // que some sozinho quando a busca é corrigida
   if (!resposta.ok) {
     fila = [];
-    mostrarMensagem(dados.erro, 'erro');
+    const tr = document.createElement('tr');
+    celula(tr, dados.erro).colSpan = 5;
+    tbody.appendChild(tr);
     return;
   }
   fila = dados;
 
   if (fila.length === 0) {
     const tr = document.createElement('tr');
-    celula(tr, 'Nenhum paciente aguardando.').colSpan = 5;
+    const aviso = busca ? 'Nenhum paciente encontrado com esse filtro.' : 'Nenhum paciente aguardando.';
+    celula(tr, aviso).colSpan = 5;
     tbody.appendChild(tr);
     return;
   }
@@ -86,15 +98,27 @@ async function carregarFila() {
   fila.forEach((a, i) => {
     const tr = document.createElement('tr');
     celula(tr, a.numero_atendimento);
-    celula(tr, a.nome_completo);
+    const nome = celula(tr, a.nome_completo + ' ');
     celula(tr, a.idade);
+
+    // recepção marcou sinal de alerta: linha em vermelho e etiqueta do lado do nome
+    if (a.alerta) {
+      tr.className = 'linha-alerta';
+      const span = document.createElement('span');
+      span.className = 'etiqueta prioridade-1';
+      span.textContent = 'alerta';
+      nome.appendChild(span);
+    }
     celula(tr, a.data_hora_entrada);
 
-    const botao = document.createElement('button');
-    botao.className = 'botao';
-    botao.textContent = 'Fazer triagem';
-    botao.addEventListener('click', () => abrirTriagem(i));
-    celula(tr, '').appendChild(botao);
+    const acao = celula(tr, '');
+    if (!somenteVer) {
+      const botao = document.createElement('button');
+      botao.className = 'botao';
+      botao.textContent = 'Fazer triagem';
+      botao.addEventListener('click', () => abrirTriagem(i));
+      acao.appendChild(botao);
+    }
 
     tbody.appendChild(tr);
   });
@@ -143,7 +167,7 @@ document.getElementById('formTriagem').addEventListener('submit', async (evento)
     });
     const dados = await resposta.json();
 
-    // 409 = outra pessoa já triou esse paciente: fecha o formulário e atualiza a fila
+    // 409 = outra pessoa já triou ou a recepção cancelou: fecha o formulário e atualiza a fila
     if (resposta.status === 409) {
       document.getElementById('formTriagem').hidden = true;
       mostrarMensagem(dados.erro, 'erro');
@@ -169,6 +193,17 @@ document.getElementById('formTriagem').addEventListener('submit', async (evento)
   }
 });
 
-// botão Atualizar, e já carrega a fila quando a tela abre
-document.getElementById('atualizar').addEventListener('click', carregarFila);
+// Buscar: carrega a fila com o filtro digitado
+document.getElementById('botaoBuscar').addEventListener('click', carregarFila);
+
+// Ver todos: apaga o filtro e mostra a fila inteira
+document.getElementById('botaoTodos').addEventListener('click', () => {
+  document.getElementById('busca').value = '';
+  carregarFila();
+});
+
+// carrega a fila quando a tela abre
 carregarFila();
+
+// a cada 30 segundos busca a fila de novo, pra paciente novo aparecer sozinho
+setInterval(carregarFila, 30000);
