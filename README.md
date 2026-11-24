@@ -39,7 +39,8 @@ Projeto Integrador/
     css/style.css
     js/                   um arquivo por tela, mais menu-admin.js (menu do administrador)
   MER.md                  modelo do banco com mais detalhes
-  Documentação            documento do projeto
+  docs/
+    Documentação          documento do projeto
 ```
 
 ## Como rodar (Windows)
