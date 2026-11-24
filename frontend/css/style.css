@@ -382,3 +382,61 @@ main {
 .erro:empty, .sucesso:empty {
   display: none;
 }
+
+/* ========== Histórico ========== */
+
+/* frase de explicação em cinza (ex: "Somente consulta...") */
+.dica {
+  color: var(--texto-suave);
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+/* quantos foram encontrados, embaixo dos filtros */
+.total {
+  margin-top: 16px;
+}
+
+/* data e hora não quebram em duas linhas */
+.sem-quebra {
+  white-space: nowrap;
+}
+
+/* ========== Alerta na chegada ========== */
+
+/* caixinha de marcar da recepção (alerta e não identificado) */
+.caixa .marcar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* a do alerta fica em vermelho porque é caso grave */
+.caixa .marcar-grave {
+  color: #c81e1e;
+}
+
+/* sem isso a caixinha ocupa a largura toda, igual aos outros campos */
+.caixa .marcar input {
+  width: auto;
+  margin: 0;
+}
+
+/* paciente com alerta na fila da triagem */
+.linha-alerta td {
+  background: #fde8e8;
+}
+
+/* ========== Profissionais ========== */
+
+/* situação do profissional na tabela da equipe */
+.situacao-ativo   { background: #dcfce7; color: #15803d; }
+.situacao-inativo { background: #f3f4f6; color: #6b7280; }
+
+/* ========== Busca da recepção ========== */
+
+/* o "Buscar por" fica estreito, o campo do lado ocupa o resto */
+.form-linha .campo-curto {
+  flex: 0 0 180px;
+}

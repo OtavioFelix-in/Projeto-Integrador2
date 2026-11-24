@@ -14,6 +14,7 @@
       <div class="logo">PRONTO<br>SOCORRO</div>
       <nav>
         <a href="recepcao.html" class="ativo">Recepção</a>
+        <a href="historico-recepcao.html">Histórico</a>
       </nav>
       <button id="sair" class="botao-sair">Sair</button>
     </aside>
@@ -26,9 +27,47 @@
 
       <main>
 
+        <section id="caixaBuscarPaciente" class="caixa">
+          <h2>Buscar paciente</h2>
+          <p class="dica">Paciente que já veio antes: busque e confirme quem é. Paciente novo: preencha o formulário abaixo.</p>
+          <div class="form-linha">
+            <label class="campo-curto">Buscar por
+              <select id="tipoBuscaPaciente">
+                <option value="cpf">CPF</option>
+                <option value="rg">RG</option>
+                <option value="nome">Nome</option>
+              </select>
+            </label>
+            <label>
+              <input type="text" id="buscaPaciente">
+            </label>
+            <button id="botaoBuscarPaciente" class="botao">Buscar</button>
+          </div>
+          <table id="tabelaPacientes" class="tabela" style="margin-top: 16px;" hidden>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Nascimento</th>
+                <th>Mãe</th>
+                <th>CPF</th>
+                <th>RG</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="pacientes"></tbody>
+          </table>
+        </section>
+
         <form id="formPaciente" class="caixa">
           <h2 id="tituloForm">Novo atendimento</h2>
+          <p id="avisoCadastro" class="dica" hidden>Paciente já cadastrado. Confira os dados com ele: o que você mudar aqui atualiza o cadastro.</p>
           <input type="hidden" id="idAtendimento">
+          <input type="hidden" id="id_paciente">
+
+          <label class="marcar">
+            <input type="checkbox" id="nao_identificado">
+            Paciente não identificado (chegou sem documento e sem conseguir informar os dados)
+          </label>
 
           <label>Nome completo
             <input type="text" id="nome_completo" required>
@@ -67,6 +106,10 @@
           <label>Endereço
             <input type="text" id="endereco">
           </label>
+          <label class="marcar marcar-grave">
+            <input type="checkbox" id="alerta">
+            Sinal de alerta: sangramento forte, desmaio, falta de ar ou dor no peito
+          </label>
 
           <div class="acoes">
             <button type="button" class="botao botao-secundario" id="limpar">Limpar</button>
@@ -78,10 +121,17 @@
         <section class="caixa">
           <h2>Consultar atendimento</h2>
           <div class="form-linha">
-            <label>Número (AT0001) ou CPF
+            <label class="campo-curto">Buscar por
+              <select id="tipoBusca">
+                <option value="numero">Número</option>
+                <option value="cpf">CPF</option>
+              </select>
+            </label>
+            <label>
               <input type="text" id="busca">
             </label>
             <button id="botaoBuscar" class="botao">Buscar</button>
+            <button id="botaoTodos" class="botao botao-secundario">Ver todos</button>
           </div>
           <table class="tabela">
             <thead>
@@ -100,6 +150,7 @@
     </div>
   </div>
 
+  <script src="js/menu-admin.js"></script>
   <script src="js/recepcao.js"></script>
 </body>
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pronto Socorro - Histórico de Atendimentos</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">PRONTO<br>SOCORRO</div>
+      <nav>
+        <a href="medico.html">Painel</a>
+        <a href="historico-medico.html" class="ativo">Histórico</a>
+      </nav>
+      <button id="sair" class="botao-sair">Sair</button>
+    </aside>
+
+    <div class="conteudo">
+      <header class="topo">
+        <h1>Histórico de Atendimentos</h1>
+        <span id="nomeUsuario"></span>
+      </header>
+
+      <main>
+        <section class="caixa">
+          <h2>Atendimentos finalizados</h2>
+          <p class="dica">Somente consulta. Atendimentos que o médico finalizou.</p>
+
+          <div class="form-linha">
+            <label>De
+              <input type="date" id="de">
+            </label>
+            <label>Até
+              <input type="date" id="ate">
+            </label>
+            <label>Número
+              <input type="text" id="numero">
+            </label>
+            <label>Classificação
+              <select id="classificacao">
+                <option value="">Todas</option>
+                <option value="1">1 - Vermelho</option>
+                <option value="2">2 - Laranja</option>
+                <option value="3">3 - Amarelo</option>
+                <option value="4">4 - Verde</option>
+                <option value="5">5 - Azul</option>
+              </select>
+            </label>
+            <button type="button" class="botao botao-secundario" id="limpar">Limpar</button>
+            <button type="button" class="botao" id="filtrar">Filtrar</button>
+          </div>
+          <p id="total" class="dica total"></p>
+          <p id="mensagem"></p>
+
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Médico</th>
+                <th>Paciente</th>
+                <th>Idade</th>
+                <th>Atendido em</th>
+                <th>Diagnóstico</th>
+                <th>Receita</th>
+                <th>Classificação</th>
+              </tr>
+            </thead>
+            <tbody id="historico"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/menu-admin.js"></script>
+  <script src="js/historico-medico.js"></script>
+</body>
+
+</html>

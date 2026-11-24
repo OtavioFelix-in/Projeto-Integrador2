@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pronto Socorro - Histórico da Triagem</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">PRONTO<br>SOCORRO</div>
+      <nav>
+        <a href="triagem.html">Triagem</a>
+        <a href="historico-triagem.html" class="ativo">Histórico</a>
+      </nav>
+      <button id="sair" class="botao-sair">Sair</button>
+    </aside>
+
+    <div class="conteudo">
+      <header class="topo">
+        <h1>Histórico da Triagem</h1>
+        <span id="nomeUsuario"></span>
+      </header>
+
+      <main>
+        <section class="caixa">
+          <h2>Triagens de atendimentos finalizados</h2>
+          <p class="dica">Somente consulta. Atendidos pelo médico ou cancelados pela recepção depois da triagem.</p>
+
+          <div class="form-linha">
+            <label>De
+              <input type="date" id="de">
+            </label>
+            <label>Até
+              <input type="date" id="ate">
+            </label>
+            <label>Número
+              <input type="text" id="numero">
+            </label>
+            <label>Status
+              <select id="status">
+                <option value="">Todos</option>
+                <option value="atendido">Atendido</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </label>
+            <label>Classificação
+              <select id="classificacao">
+                <option value="">Todas</option>
+                <option value="1">1 - Vermelho</option>
+                <option value="2">2 - Laranja</option>
+                <option value="3">3 - Amarelo</option>
+                <option value="4">4 - Verde</option>
+                <option value="5">5 - Azul</option>
+              </select>
+            </label>
+            <button type="button" class="botao botao-secundario" id="limpar">Limpar</button>
+            <button type="button" class="botao" id="filtrar">Filtrar</button>
+          </div>
+          <p id="total" class="dica total"></p>
+          <p id="mensagem"></p>
+
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Paciente</th>
+                <th>Idade</th>
+                <th>Triagem em</th>
+                <th>Pressão</th>
+                <th>Temp.</th>
+                <th>Batimentos</th>
+                <th>Queixas</th>
+                <th>Triado</th>
+                <th>Classificação</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historico"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/menu-admin.js"></script>
+  <script src="js/historico-triagem.js"></script>
+</body>
+
+</html>

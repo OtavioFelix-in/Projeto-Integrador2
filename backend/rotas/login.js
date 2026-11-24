@@ -12,6 +12,11 @@ rotas.post('/login', async (req, res) => {
     const cpf = soNumeros(req.body.cpf);
     const senha = req.body.senha;
 
+    // sem CPF ou sem senha nem consulta o banco (o bcrypt quebra se a senha vier vazia)
+    if (!cpf || !senha) {
+      return res.status(401).json({ erro: 'CPF ou senha inválidos.' });
+    }
+
     // procura o usuário pelo CPF, e só se estiver ativo.
     // o ? é preenchido pelo mysql2 com segurança (evita SQL injection)
     const [linhas] = await banco.query(

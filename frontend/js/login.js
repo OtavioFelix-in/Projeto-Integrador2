@@ -2,7 +2,8 @@
 const telas = {
   recepcao: 'recepcao.html',
   enfermagem: 'triagem.html',
-  medico: 'medico.html'
+  medico: 'medico.html',
+  admin: 'profissionais.html'
 };
 
 // abriu o login (ou voltou pra ele): apaga o login anterior

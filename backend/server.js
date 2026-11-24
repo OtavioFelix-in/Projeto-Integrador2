@@ -28,6 +28,7 @@ app.use(require('./rotas/login'));
 app.use(require('./rotas/recepcao'));
 app.use(require('./rotas/triagem'));
 app.use(require('./rotas/medico'));
+app.use(require('./rotas/admin'));
 
 // liga o servidor. fica por último, depois de todas as rotas
 app.listen(3000, () => {

@@ -18,7 +18,7 @@ CREATE TABLE usuario (
     senha_hash  VARCHAR(255) NOT NULL,                 -- bcrypt, nunca a senha pura
     perfil      VARCHAR(20)  NOT NULL,
     ativo       BOOLEAN      NOT NULL DEFAULT TRUE,    -- inativo não entra no sistema
-    CONSTRAINT ck_usuario_perfil CHECK (perfil IN ('recepcao', 'enfermagem', 'medico'))
+    CONSTRAINT ck_usuario_perfil CHECK (perfil IN ('recepcao', 'enfermagem', 'medico', 'admin'))
 );
 
 -- Dados pessoais do paciente, cadastrado uma vez só
@@ -27,13 +27,14 @@ CREATE TABLE paciente (
     nome_completo    VARCHAR(150) NOT NULL,
     cpf              CHAR(11)     UNIQUE,              -- só números
     rg               VARCHAR(20)  UNIQUE,
-    data_nascimento  DATE         NOT NULL,
+    data_nascimento  DATE,                             -- vazio só em paciente não identificado
     sexo             CHAR(1)      NOT NULL,
     telefone         VARCHAR(11),
     endereco         VARCHAR(200),
     nome_pai         VARCHAR(150),
     nome_mae         VARCHAR(150),
-    CONSTRAINT ck_paciente_documento CHECK (cpf IS NOT NULL OR rg IS NOT NULL),
+    nao_identificado BOOLEAN      NOT NULL DEFAULT FALSE, -- chegou sem documento e sem conseguir informar (ex: desacordado)
+    CONSTRAINT ck_paciente_documento CHECK (cpf IS NOT NULL OR rg IS NOT NULL OR nao_identificado = TRUE),
     CONSTRAINT ck_paciente_sexo      CHECK (sexo IN ('M', 'F'))
 );
 
@@ -45,13 +46,17 @@ CREATE TABLE atendimento (
     status                 VARCHAR(20)  NOT NULL DEFAULT 'aberto',
     id_recepcionista       INT          NOT NULL,
     data_hora_entrada      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_medico              INT,                        -- vazio até o médico atender
+    alerta                 BOOLEAN      NOT NULL DEFAULT FALSE, -- recepção viu sinal grave na chegada: vai pro topo da fila da triagem
+    id_medico             INT,                        -- vazio até o médico atender
     data_hora_atendimento  DATETIME,
     diagnostico            VARCHAR(300),
     receita                TEXT,                       -- texto livre que o médico digita
+    id_cancelou            INT,                        -- vazio até a recepção cancelar
+    data_hora_cancelamento DATETIME,
     CONSTRAINT fk_atendimento_paciente      FOREIGN KEY (id_paciente)      REFERENCES paciente (id_paciente),
     CONSTRAINT fk_atendimento_recepcionista FOREIGN KEY (id_recepcionista) REFERENCES usuario (id_usuario),
     CONSTRAINT fk_atendimento_medico        FOREIGN KEY (id_medico)        REFERENCES usuario (id_usuario),
+    CONSTRAINT fk_atendimento_cancelou      FOREIGN KEY (id_cancelou)      REFERENCES usuario (id_usuario),
     CONSTRAINT ck_atendimento_status        CHECK (status IN ('aberto', 'triado', 'atendido', 'cancelado'))
 );
 
@@ -125,3 +130,7 @@ INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil) VALU
     ('Adriano', '80840703805', '21975337654', 'adriano@prontosocorro.exemplo.com', '80840703805', '$2b$10$gAkF..vs4YaOsNzwNixu4.nlG6uqUOWvsIU38utBWPy9GwHOfZxo2', 'medico'),
     ('Arrascaeta', '83982296404', '21978055935', 'arrascaeta@prontosocorro.exemplo.com', '83982296404', '$2b$10$DxL1xI9sHuguMkG58uLtlOKARr4D95lzpawWdYYmQGz6zu.fa3NKC', 'medico'),
     ('Gabigol', '87123889045', '21980774216', 'gabigol@prontosocorro.exemplo.com', '87123889045', '$2b$10$n9m2obB5Y8VrErSI3LRmyOIE7/nkM7TjI3bA4s/BF4N0ZKSOh6xBe', 'medico');
+
+-- Administrador: cadastra os profissionais e vê todas as telas, mas não opera nenhuma etapa. Login = CPF
+INSERT INTO usuario (nome, cpf, telefone, email, login, senha_hash, perfil) VALUES
+    ('Jorge Jesus', '90265482137', '21970302137', 'jorge.jesus@prontosocorro.exemplo.com', '90265482137', '$2b$10$uqE9dKbSAPesBIDTB0yFR.FsKQwZ.y9v8GjuI82moJqaL/97slAsu', 'admin');
