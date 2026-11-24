@@ -38,6 +38,7 @@ Projeto Integrador/
     historico-recepcao.html, historico-triagem.html, historico-medico.html
     css/style.css
     js/                   um arquivo por tela, mais menu-admin.js (menu do administrador)
+  COMO_INSTALAR.md        passo a passo de instalação no Windows
   MER.md                  modelo do banco com mais detalhes
   docs/
     Documentação          documento do projeto
